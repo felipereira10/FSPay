@@ -1,7 +1,8 @@
 # 💳 FSPay
 
-![image](https://github.com/user-attachments/assets/40fd4a9b-24bf-41dd-984c-04a23210f69c)
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/40fd4a9b-24bf-41dd-984c-04a23210f69c" alt="FSPay Logo" width="300"/>
+</p>
 
 **FSPay** é uma aplicação mobile de conta digital construída com React Native, que oferece funcionalidades como transferências, gestão de cartões e integração com dados de investimentos da bolsa brasileira (B3). O projeto visa unir segurança, modernidade e performance num ambiente intuitivo e funcional.
 
