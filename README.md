@@ -1,1 +1,52 @@
-# FSPay
+# 💳 FSPay
+
+![image](https://github.com/user-attachments/assets/40fd4a9b-24bf-41dd-984c-04a23210f69c)
+
+
+**FSPay** é uma aplicação mobile de conta digital construída com React Native, que oferece funcionalidades como transferências, gestão de cartões e integração com dados de investimentos da bolsa brasileira (B3). O projeto visa unir segurança, modernidade e performance num ambiente intuitivo e funcional.
+
+---
+
+## 🚀 Funcionalidades
+
+- Autenticação com segurança JWT + biometria
+- Painel com saldo, extrato e movimentações
+- Transferência bancária (PIX/DOC/TED simulados)
+- Gestão de cartões virtuais e físicos
+- Acompanhamento de investimentos (ações da B3)
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+### Frontend
+- React Native + Expo
+- TypeScript
+- React Navigation
+- Styled Components
+- Axios
+
+### Backend
+- Node.js + NestJS
+- PostgreSQL + Prisma ORM
+- Docker
+- Redis (para cache/sessão)
+- JWT Authentication
+
+### Integrações
+- Brapi (dados da bolsa)
+- Firebase ou serviços de email/SMS
+- Open Finance (em desenvolvimento)
+
+---
+
+## 📦 Como rodar o projeto
+
+### Backend
+
+```bash
+cd backend
+docker-compose up -d
+npm install
+npx prisma migrate dev
+npm run start:dev
