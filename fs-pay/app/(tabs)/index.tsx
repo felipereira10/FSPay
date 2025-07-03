@@ -1,7 +1,9 @@
 import { StyleSheet } from 'react-native';
 import { Redirect } from 'expo-router';
+import React from 'react';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
+
 
 // export default function TabOneScreen() {
 //   return (
@@ -13,7 +15,7 @@ import { Text, View } from '@/components/Themed';
 //   );
 // }
 export default function Index() {
-  return <Redirect href="/splash" />;
+  return <Redirect href="/screens/Login" />;
 }
 
 const styles = StyleSheet.create({
