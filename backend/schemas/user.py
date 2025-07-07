@@ -3,7 +3,7 @@ from typing import Literal
 from datetime import date
 
 class UserCreate(BaseModel):
-    full_name: str
+    fullName: str
     email: EmailStr
     password: str
     cpf: str
@@ -13,9 +13,9 @@ class UserCreate(BaseModel):
 
 class UserOut(BaseModel):
     id: int
-    full_name: str
+    fullName: str
     email: EmailStr
     role: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True

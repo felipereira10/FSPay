@@ -2,7 +2,7 @@ import axios from 'axios';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
-const LOCAL = true; // true = backend no PC, false = produção
+// const LOCAL = true; // true = backend no PC, false = produção
 
 const isExpoGo = Constants.appOwnership === 'expo';
 
@@ -50,8 +50,16 @@ export async function loginUser(email: string, password: string) {
       email,
       password,
     });
-    return response.data;
-  } catch (err) {
+      return {
+        token: response.data.access_token,
+        user: {
+          email,
+          name: '', // opcional, se não vem no backend ainda
+          role: 'user' // ou muda isso se quiser receber do backend depois
+        }
+      };
+  } catch (err: any) {
+    console.log('[loginUser] Erro no backend:', err.response?.data || err.message);
     console.warn('[loginUser] Backend offline, usando modo mock.');
     return mockLogin(email, password); // fallback aqui
   }

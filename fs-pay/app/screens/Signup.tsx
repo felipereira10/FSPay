@@ -21,12 +21,14 @@ export default function SignupScreen() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [cpf, setCpf] = useState('');
   const [birthdate, setBirthdate] = useState('');
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setshowConfirmPassword] = useState(false);
 
   function validateEmail(email: string) {
     return /\S+@\S+\.\S+/.test(email);
@@ -86,6 +88,9 @@ export default function SignupScreen() {
     if (!fullName.trim()) return Toast.show({ type: 'error', text1: 'Preencha o nome completo' });
     if (!validateEmail(email)) return Toast.show({ type: 'error', text1: 'Email inválido' });
     if (password.length < 6) return Toast.show({ type: 'error', text1: 'Senha muito curta' });
+    if (password !== confirmPassword) {
+        return Toast.show({ type: 'error', text1: 'As senhas não coincidem' });
+    }
     if (!validateCPF(cpf)) return Toast.show({ type: 'error', text1: 'CPF inválido' });
     if (!birthdate) return Toast.show({ type: 'error', text1: 'Data de nascimento é obrigatória' });
 
@@ -168,15 +173,24 @@ export default function SignupScreen() {
             />
             </TouchableOpacity>
         </View>
-        <TextInput
-          placeholder="Confirme sua senha"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-          style={[styles.input, focusedField === 'password' && styles.inputFocused]}
-          onFocus={() => setFocusedField('password')}
-          onBlur={() => setFocusedField(null)}
-        />
+        <View style={[styles.passwordContainer, focusedField === 'confirmPassword' && styles.inputFocused]}>
+            <TextInput
+                placeholder="Confirme sua senha"
+                secureTextEntry={!showConfirmPassword}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                style={[styles.input, { flex: 1, marginVertical: 0 }]}
+                onFocus={() => setFocusedField('confirmPassword')}
+                onBlur={() => setFocusedField(null)}
+            />
+            <TouchableOpacity onPress={() => setshowConfirmPassword(!showConfirmPassword)} style={styles.toggleButton}>
+                <MaterialIcons
+                name={showConfirmPassword ? 'visibility-off' : 'visibility'}
+                size={24}
+                color="gray"
+                />
+            </TouchableOpacity>
+        </View>
         <TextInput
           placeholder="CPF"
           value={cpf}
@@ -188,7 +202,7 @@ export default function SignupScreen() {
           maxLength={14}
         />
         <TextInput
-          placeholder="Data de nascimento (dd/mm/yyyy)"
+          placeholder="Data de nascimento"
           value={birthdate}
           onChangeText={(text) => setBirthdate(formatDate(text))}
           style={[styles.input, focusedField === 'birthdate' && styles.inputFocused]}
@@ -198,7 +212,7 @@ export default function SignupScreen() {
           keyboardType="numeric"
         />
         <TextInput
-          placeholder="Telefone (opcional)"
+          placeholder="Telefone"
           value={phone}
           onChangeText={(text) => setPhone(formatPhone(text))}
           style={[styles.input, focusedField === 'phone' && styles.inputFocused]}

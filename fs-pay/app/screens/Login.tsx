@@ -38,7 +38,12 @@ export default function LoginScreen() {
         return;
       }
       const data = await loginUser(email, password);
-      await AsyncStorage.setItem('userToken', data.token);
+      console.log('loginUser response:', data);
+
+      if (!data?.token) {
+        throw new Error('Token não retornado do backend');
+      }
+      await AsyncStorage.setItem('userToken', data.access_token);
       router.push('/Home');
     } catch (err: any) {
       console.log(err);

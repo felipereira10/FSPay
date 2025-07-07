@@ -32,4 +32,14 @@ def login(data: LoginData, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
 
     token = create_access_token({"sub": user.email}, ACCESS_TOKEN_EXPIRE_MINUTES)
-    return {"access_token": token, "token_type": "bearer"}
+
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {
+            "id": user.id,
+            "fullName": user.fullName,
+            "email": user.email,
+            "role": user.role.value if hasattr(user.role, 'value') else user.role,
+        }
+    }

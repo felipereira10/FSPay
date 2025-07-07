@@ -6,7 +6,7 @@ from passlib.hash import bcrypt
 def create_user(db: Session, user: UserCreate):
     hashed_pw = bcrypt.hash(user.password)
     db_user = User(
-        full_name=user.full_name,
+        fullName=user.fullName,
         email=user.email,
         password_hash=hashed_pw,
         cpf=user.cpf,
