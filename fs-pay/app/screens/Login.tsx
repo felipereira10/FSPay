@@ -74,7 +74,7 @@ export default function LoginScreen() {
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        style={styles.input}
+        style={[styles.input, { paddingHorizontal: 20 }]}
       />
       <View style={styles.passwordContainer}>
         <TextInput
@@ -109,7 +109,8 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#d4edda',
+    // backgroundColor: '#d4edda',
+    backgroundColor: '#bf930d',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -141,7 +142,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   buttonLogin: {
-    backgroundColor: '#227930',
+    // backgroundColor: '#227930',
+    backgroundColor: '#f3ca4c',
     textAlign: 'center',
     padding: 20,
     borderRadius: 8,
