@@ -17,4 +17,4 @@ class User(Base):
     cpf = Column(String(14), unique=True)
     birthdate = Column(Date)
     phone = Column(String(20))
-    role = Column(Enum(RoleEnum), default=RoleEnum.user)
+    role = Column(Enum(RoleEnum), default=RoleEnum.user, nullable=False)
