@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Image, View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 // import { loginUser } from '../services/api';
 import { useRouter } from 'expo-router';
+import { useEffect } from 'react';
 
 // Mock da função loginUser (sem importar do serviço real)
 async function loginUser(email: string, password: string, router: any) {
@@ -11,9 +13,18 @@ async function loginUser(email: string, password: string, router: any) {
     await AsyncStorage.setItem('userToken', 'fake-token');  // Salvar o token
       router.push('/Home'); // Navegar para a home
     } else {
-      alert('Credenciais inválidas!');
-    }
+        Toast.show({
+          type: 'error',
+          text1: 'Erro de login',
+          text2: 'Credenciais inválidas. Verifique e tente novamente.',
+          position: 'top',
+          visibilityTime: 4000,
+          autoHide: true,
+          topOffset: 50,
+        });
+      }
   };
+  
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -21,6 +32,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+
 
     async function handleLogin() {
       try {
@@ -42,7 +54,22 @@ export default function LoginScreen() {
   
 
   return (
+
+    
+
+    // <View style={styles.container}>
+    //   <Text style={styles.slogan}>Bem-vindo ao FS Pay</Text>
+    //   {/* <Image source={require('../assets/logo.png')} style={styles.logo} /> */}
+    //   {/* <TouchableOpacity onPress={() => router.push('/Signup')} style={styles.buttonSignup}>
+    //     <Text>Registrar</Text>
+    //   </TouchableOpacity> */}
+
     <View style={styles.container}>
+
+      <Image
+        source={require('../../assets/images/FSpaySemFundo.png')}
+        style={{ alignSelf: 'center', width: '70%', height: '10%', marginBottom: 40 }}
+      />
       <TextInput
         placeholder="Email"
         value={email}
@@ -71,11 +98,18 @@ export default function LoginScreen() {
   );
 }
 
+// useEffect(() => {
+//   Toast.show({
+//     type: 'success',
+//     text1: 'Teste de toast',
+//     text2: 'Se você está vendo isso, está funcionando! 🚀',
+//   });
+// }, []);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#001f2f',
+    backgroundColor: '#d4edda',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -107,7 +141,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   buttonLogin: {
-    backgroundColor: '#d4edda',
+    backgroundColor: '#227930',
     textAlign: 'center',
     padding: 20,
     borderRadius: 8,

@@ -8,11 +8,18 @@ export default function Home() {
   const balance = 20530.75;
   const router = useRouter();
 
-    const navigateToRoute = (route: string) => {
+    const navigateToRoute = (
+      route: '/shortcut/Transfer' | '/shortcut/Invest' | '/shortcut/Cards' | '/shortcut/Loans'
+    ) => {
       router.push(route);
-    }
+    };
 
-    const initialCards = [
+    const initialCards: {
+      id: string;
+      name: string;
+      icon: string;
+      route: '/shortcut/Transfer' | '/shortcut/Invest' | '/shortcut/Cards' | '/shortcut/Loans';
+    }[] = [
       { id: '1', name: 'Transferir', icon: 'add-circle-outline', route: '/shortcut/Transfer' },
       { id: '2', name: 'Investimentos', icon: 'trending-up', route: '/shortcut/Invest' },
       { id: '3', name: 'Cartões', icon: 'card-outline', route: '/shortcut/Cards' },
