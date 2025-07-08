@@ -14,10 +14,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 import { useRouter } from 'expo-router';
-import { loginUser } from '../services/api';
+import { loginUser } from '../../services/api';
+import Loading from '@/components/Loading';
 
 export default function LoginScreen() {
-  const USE_MOCK = false;
 
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -25,24 +25,16 @@ export default function LoginScreen() {
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleLogin() {
     try {
-      if (USE_MOCK) {
-        if (email === 'admin@fspay.com' && password === '1234') {
-          await AsyncStorage.setItem('userToken', 'fake-token');
-          router.push('/Home');
-        } else {
-          throw new Error('Credenciais mock inválidas');
-        }
-        return;
-      }
-      const result  = await loginUser(email, password);
-      console.log('Login result:', result);
+      const result = await loginUser(email, password);
 
       if (result.token === undefined) {
         throw new Error('Token não retornado do backend');
       }
+
       await AsyncStorage.setItem('userToken', result.token);
       router.push('/Home');
     } catch (err: any) {
@@ -58,7 +50,7 @@ export default function LoginScreen() {
     }
   }
 
-  return (
+  return isLoading ? <Loading /> : (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}

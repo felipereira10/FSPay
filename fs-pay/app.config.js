@@ -4,7 +4,7 @@ export default {
     slug: 'fspay',
     version: '1.0.0',
     extra: {
-      USE_MOCK: true, // ← só muda para false em produção
+      USE_MOCK: false, // ← false para rodar com backend
     },
   },
 };

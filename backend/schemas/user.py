@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Literal
+from typing import Literal, Optional
 from datetime import date
 
 class UserCreate(BaseModel):
@@ -19,3 +19,11 @@ class UserOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+class UserUpdate(BaseModel):
+    fullName: Optional[str]
+    email: Optional[EmailStr]
+    cpf: Optional[str]
+    birthdate: Optional[date]
+    phone: Optional[str]
+    role: Optional[Literal['admin', 'user', 'employee']]

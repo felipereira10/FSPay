@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import Loading from '@/components/Loading';
 
 export default function Home() {
   const [showBalance, setShowBalance] = useState(true);
   const balance = 20530.75;
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
     const navigateToRoute = (
       route: '/shortcut/Transfer' | '/shortcut/Invest' | '/shortcut/Cards' | '/shortcut/Loans'
@@ -30,7 +32,7 @@ export default function Home() {
 
   const toggleBalance = () => setShowBalance(!showBalance);
 
-  return (
+  return isLoading ? <Loading /> : (
     <View style={styles.container}>
       {/* Topo */}
       <View style={styles.header}>

@@ -5,6 +5,7 @@ from schemas.user import UserCreate, UserOut
 from services.auth_service import create_user, authenticate_user
 from utils.jwt import create_access_token
 from pydantic import BaseModel
+
 import os
 
 class LoginData(BaseModel):

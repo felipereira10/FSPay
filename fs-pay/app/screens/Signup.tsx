@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useRouter } from 'expo-router';
-import { signupUser } from '../services/api';
+import { signupUser } from '../../services/api';
 import { MaterialIcons } from '@expo/vector-icons';
 import FloatingDollar from '../implements/FloatingDollar';
 
