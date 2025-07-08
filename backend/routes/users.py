@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import UploadFile, File, APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from core.database import SessionLocal
 from models.user import RoleEnum, User
 from schemas.user import UserOut, UserUpdate
 from middlewares.auth import get_current_user
 from typing import List
+import shutil
+import os
 
 router = APIRouter()
 
@@ -68,3 +70,18 @@ def delete_user(
     db.delete(user)
     db.commit()
     return {"detail": "Usuário excluído com sucesso"}
+
+// Upload profile picture
+@router.post("/users/upload-profile-pic")
+async def upload_profile_picture(file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
+    file_path = f"static/profile_pics/{current_user.id}_{file.filename}"
+    
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    # Atualiza a URL da imagem no banco
+    user = db.query(User).filter(User.id == current_user.id).first()
+    user.profile_image = file_path
+    db.commit()
+
+    return JSONResponse({"message": "Imagem salva com sucesso", "path": file_path})
