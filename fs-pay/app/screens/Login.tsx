@@ -37,13 +37,13 @@ export default function LoginScreen() {
         }
         return;
       }
-      const data = await loginUser(email, password);
-      console.log('loginUser response:', data);
+      const result  = await loginUser(email, password);
+      console.log('Login result:', result);
 
-      if (!data?.token) {
+      if (result.token === undefined) {
         throw new Error('Token não retornado do backend');
       }
-      await AsyncStorage.setItem('userToken', data.access_token);
+      await AsyncStorage.setItem('userToken', result.token);
       router.push('/Home');
     } catch (err: any) {
       console.log(err);

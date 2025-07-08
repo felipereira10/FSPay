@@ -4,6 +4,13 @@ import { Platform } from 'react-native';
 
 // const LOCAL = true; // true = backend no PC, false = produção
 
+const USE_MOCK =
+  Constants.expoConfig?.extra?.USE_MOCK ??
+  Constants.manifest?.extra?.USE_MOCK ??
+  false;
+
+console.log('USE_MOCK está como:', USE_MOCK);
+
 const isExpoGo = Constants.appOwnership === 'expo';
 
 let API_BASE_URL = '';
@@ -11,9 +18,9 @@ let API_BASE_URL = '';
 if (isExpoGo) {
   // ⚠️ Coloque aqui o IP local do seu computador (quando usar Expo Go)
   // IP da rede do trampo
-  API_BASE_URL = 'http://192.168.0.53:8000';
-  // IP da rede de casa
   // API_BASE_URL = 'http://192.168.0.53:8000';
+  // IP da rede de casa
+  API_BASE_URL = 'http://192.168.1.70:8000';
 } else if (Platform.OS === 'android') {
   // Android Studio emulador
   API_BASE_URL = 'http://10.0.2.2:8000';
@@ -45,23 +52,37 @@ const api = axios.create({
 
 // Login
 export async function loginUser(email: string, password: string) {
+  console.log('USE_MOCK está como:', USE_MOCK);
+  if (USE_MOCK) {
+    console.warn('[loginUser] Modo mock ativado.');
+    return mockLogin(email, password);
+  }
   try {
+    console.log('[loginUser] Enviando para backend:', email, password);
     const response = await axios.post(`${API_BASE_URL}/auth/login`, {
       email,
       password,
     });
-      return {
-        token: response.data.access_token,
-        user: {
-          email,
-          name: '', // opcional, se não vem no backend ainda
-          role: 'user' // ou muda isso se quiser receber do backend depois
-        }
-      };
+
+    console.log('[loginUser] Resposta do backend:', response.data);
+
+    const { access_token, user } = response.data;
+
+    if (!access_token || !user) {
+      throw new Error('Token ou usuário não retornado do backend');
+    }
+
+    return {
+      token: access_token,
+      user: {
+        email: user.email,
+        name: user.fullName || user.name || '', // fallback
+        role: user.role || 'user',
+      },
+    };
   } catch (err: any) {
     console.log('[loginUser] Erro no backend:', err.response?.data || err.message);
-    console.warn('[loginUser] Backend offline, usando modo mock.');
-    return mockLogin(email, password); // fallback aqui
+    throw new Error('Falha ao conectar com o backend');
   }
 }
 
