@@ -28,6 +28,7 @@ export default function Home() {
   const [subModalType, setSubModalType] = useState<'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' | null>(null);
   const router = useRouter();
   const balance = 20530.75;
+  const [confirmLogoutVisible, setConfirmLogoutVisible] = useState(false);
 
   const toggleBalance = () => setShowBalance(!showBalance);
 
@@ -208,14 +209,42 @@ export default function Home() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.optionButton, { marginTop: 30 }]}
-            onPress={async () => {
-              await AsyncStorage.removeItem('userToken');
-              router.replace('/'); // Redireciona pro login
-            }}
+            style={styles.logoutButton}
+            onPress={() => setConfirmLogoutVisible(true)}
           >
-            <Text style={{ color: 'red' }}>Sair</Text>
+            <Text style={styles.logoutText}>Sair</Text>
           </TouchableOpacity>
+
+          <Modal
+            visible={confirmLogoutVisible}
+            transparent
+            animationType="fade"
+            onRequestClose={() => setConfirmLogoutVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.confirmModal}>
+                <Text style={styles.modalLogoutTitle}>Deseja realmente sair?</Text>
+                <View style={styles.modalButtonRow}>
+                  <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={() => setConfirmLogoutVisible(false)}
+                  >
+                    <Text style={styles.cancelText}>Cancelar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.confirmButton}
+                    onPress={async () => {
+                      await AsyncStorage.removeItem('userToken');
+                      setConfirmLogoutVisible(false);
+                      router.replace('/');
+                    }}
+                  >
+                    <Text style={styles.confirmText}>Sair</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
         </View>
       </View>
     </Modal>
@@ -257,6 +286,26 @@ export default function Home() {
           </View>
         </View>
       </Modal>
+
+      {/* NAVBAR */}
+      <View style={styles.navbar}>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/tabs/Home')}>
+          <Ionicons name="cash-outline" size={26} color="#000" />
+          <Text style={styles.navText}>Conta</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/shortcut/Invest')}>
+          <Ionicons name="trending-up-outline" size={26} color="#000" />
+          <Text style={styles.navText}>Investimentos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/shortcut/Cards')}>
+          <Ionicons name="card-outline" size={26} color="#000" />
+          <Text style={styles.navText}>Cartões</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem} onPress={() => setModalVisible(true)}>
+          <Ionicons name="menu-outline" size={26} color="#000" />
+          <Text style={styles.navText}>Menu</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -364,8 +413,32 @@ const styles = StyleSheet.create({
   optionButton: {
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#000',
+  
   },
+  sidebarContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(0,0,0,0.3)',
+  },
+  sidebar: {
+    width: '75%',
+    backgroundColor: '#f3ca4c',
+    padding: 20,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  sidebarHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  sidebarTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+// Submodals:
   subModalBackground: {
     flex: 1,
     justifyContent: 'center',
@@ -374,7 +447,7 @@ const styles = StyleSheet.create({
   },
   subModalContainer: {
     width: '80%',
-    backgroundColor: 'white',
+    backgroundColor: '#f3ca4c',
     borderRadius: 10,
     padding: 20,
   },
@@ -383,40 +456,112 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  sidebarContainer: {
-  flex: 1,
-  flexDirection: 'row',
-  backgroundColor: 'rgba(0,0,0,0.3)',
-},
-sidebar: {
-  width: '75%',
-  backgroundColor: 'white',
-  padding: 20,
-  borderTopRightRadius: 20,
-  borderBottomRightRadius: 20,
-},
-sidebarHeader: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginBottom: 20,
-},
-sidebarTitle: {
-  fontSize: 18,
-  fontWeight: 'bold',
-},
-// Submodals:
-optionContent: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-},
-optionIcon: {
-  marginRight: 10,
-},
-optionText: {
-  flex: 1,
-  fontSize: 16,
-},
+  optionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  optionIcon: {
+    marginRight: 10,
+  },
+  optionText: {
+    flex: 1,
+    fontSize: 16,
+    // backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    // borderRadius: 8,
+  },
+// Navbar:
+  navbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#f3ca4c',
+    paddingVertical: 8,
+    paddingHorizontal: 25,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    borderColor: '#000',
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 10,
+  },
+  navItem: {
+    alignItems: 'center',
+    flex: 1,
+    color: '#000',
+  },
+  navText: {
+    fontSize: 12,
+    color: '#000',
+    marginTop: 2,
+  },
+// Logout:
+  logoutButton: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#bf1e2e',
+    paddingVertical: 12,
+    borderRadius: 10,
+    marginTop: 30,
+    alignItems: 'center',
+  },
+  logoutText: {
+    color: '#bf1e2e',
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  confirmModal: {
+    backgroundColor: '#fff',
+    padding: 25,
+    borderRadius: 12,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalLogoutTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  modalButtonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  cancelButton: {
+    flex: 1,
+    paddingVertical: 12,
+    marginRight: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#999',
+    alignItems: 'center',
+  },
+  confirmButton: {
+    flex: 1,
+    paddingVertical: 12,
+    marginLeft: 10,
+    borderRadius: 8,
+    backgroundColor: '#bf1e2e',
+    alignItems: 'center',
+  },
+  cancelText: {
+    color: '#333',
+    fontWeight: 'bold',
+  },
+  confirmText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+
+
 
 });

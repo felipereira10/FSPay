@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 export default function PrivacySettings() {
   return (
     <View>
-      <Text style={styles.title}>Meus serviços</Text>
+      <Text style={styles.title}>Privacidade dos Dados</Text>
       <Text style={styles.text}>
         ...
       </Text>
