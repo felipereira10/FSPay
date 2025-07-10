@@ -8,6 +8,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import Loading from '@/components/Loading';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// Submodals
+import AccountInfo from '@/components/SubModals/AccountInfo';
+import SecurityCenter from '@/components/SubModals/SecurityCenter';
+import PrivacySettings from '@/components/SubModals/Privacy';
+import HelpCenter from '@/components/SubModals/HelpCenter';
+import MyServices from '@/components/SubModals/MyServices';
+import AboutApp from '@/components/SubModals/AboutApp';
+import BusinessAccount from '@/components/SubModals/BusinessAccount';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -136,35 +144,67 @@ export default function Home() {
           </View>
 
           <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('photo')}>
-            <Text>Mudar foto de perfil</Text>
+            <View style={styles.optionContent}>
+              <Ionicons name="image-outline" size={20} color="#333" style={styles.optionIcon} />
+              <Text style={styles.optionText}>Mudar foto de perfil</Text>
+              <Ionicons name="chevron-forward-outline" size={18} color="#888" />
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('account')}>
-            <Text>Minha conta</Text>
+            <View style={styles.optionContent}>
+              <Ionicons name="person-outline" size={20} color="#333" style={styles.optionIcon} />
+              <Text style={styles.optionText}>Minha conta</Text>
+              <Ionicons name="chevron-forward-outline" size={18} color="#888" />
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('security')}>
-            <Text>Central de segurança</Text>
+            <View style={styles.optionContent}>
+              <Ionicons name="shield-checkmark-outline" size={20} color="#333" style={styles.optionIcon} />
+              <Text style={styles.optionText}>Central de segurança</Text>
+              <Ionicons name="chevron-forward-outline" size={18} color="#888" />
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('service')}>
-            <Text>Meus serviços</Text>
+            <View style={styles.optionContent}>
+              <Ionicons name="briefcase-outline" size={20} color="#333" style={styles.optionIcon} />
+              <Text style={styles.optionText}>Meus serviços</Text>
+              <Ionicons name="chevron-forward-outline" size={18} color="#888" />
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('privacy')}>
-            <Text>Privacidade</Text>
+            <View style={styles.optionContent}>
+              <Ionicons name="lock-closed-outline" size={20} color="#333" style={styles.optionIcon} />
+              <Text style={styles.optionText}>Privacidade</Text>
+              <Ionicons name="chevron-forward-outline" size={18} color="#888" />
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('help')}>
-            <Text>Central de ajuda</Text>
+            <View style={styles.optionContent}>
+              <Ionicons name="help-circle-outline" size={20} color="#333" style={styles.optionIcon} />
+              <Text style={styles.optionText}>Central de ajuda</Text>
+              <Ionicons name="chevron-forward-outline" size={18} color="#888" />
+            </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('accountpj')}>
-            <Text>Abrir conta PJ</Text>
+          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('help')}>
+            <View style={styles.optionContent}>
+              <Ionicons name="business-outline" size={20} color="#333" style={styles.optionIcon} />
+              <Text style={styles.optionText}>Abrir conta PJ</Text>
+              <Ionicons name="chevron-forward-outline" size={18} color="#888" />
+            </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('about')}>
-            <Text>Sobre o aplicativo</Text>
+          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('help')}>
+            <View style={styles.optionContent}>
+              <Ionicons name="information-circle-outline" size={20} color="#333" style={styles.optionIcon} />
+              <Text style={styles.optionText}>Sobre o aplicativo</Text>
+              <Ionicons name="chevron-forward-outline" size={18} color="#888" />
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -185,31 +225,32 @@ export default function Home() {
       <Modal visible={subModalVisible} animationType="fade" transparent onRequestClose={closeSubModal}>
         <View style={styles.subModalBackground}>
           <View style={styles.subModalContainer}>
-            <Text style={styles.subModalTitle}>
-              {{
-                photo: 'Mudar Foto de Perfil',
-                account: 'Minha Conta',
-                security: 'Central de Segurança',
-                service: 'Meus Serviços',
-                privacy: 'Privacidade',
-                help: 'Central de Ajuda',
-                accountpj: 'Abrir Conta PJ',
-                about: 'Sobre o Aplicativo',
-              }[subModalType ?? 'about']}
-            </Text>
-
-            {subModalType === 'photo' && (
-              <TouchableOpacity onPress={pickImage} style={styles.optionButton}>
-                <Text>Selecionar Imagem</Text>
-              </TouchableOpacity>
-            )}
-
-            {(subModalType !== 'photo') && (
-              <Text style={{ marginTop: 10 }}>
-                Conteúdo da opção <Text style={{ fontWeight: 'bold' }}>{subModalType}</Text> vai aqui.
-              </Text>
-            )}
-
+            {(() => {
+              switch (subModalType) {
+                case 'photo':
+                  return (
+                    <TouchableOpacity onPress={pickImage} style={styles.optionButton}>
+                      <Text>Selecionar Imagem</Text>
+                    </TouchableOpacity>
+                  );
+                case 'account':
+                  return <AccountInfo />;
+                case 'security':
+                  return <SecurityCenter />;
+                case 'service':
+                  return <MyServices />;
+                case 'privacy':
+                  return <PrivacySettings />;
+                case 'help':
+                  return <HelpCenter />;
+                case 'accountpj':
+                  return <BusinessAccount />;
+                case 'about':
+                  return <AboutApp />;
+                default:
+                  return null;
+              }
+            })()}
             <TouchableOpacity onPress={closeSubModal} style={{ marginTop: 20 }}>
               <Text style={{ color: 'blue' }}>Voltar</Text>
             </TouchableOpacity>
@@ -249,16 +290,27 @@ const styles = StyleSheet.create({
   balanceLabel: {
     color: '#fff',
     fontSize: 16,
+    fontWeight: 'bold',
   },
   balanceRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 5,
+    color: '#fff',
   },
   balanceValue: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#fff',
+    // borderColor: '#fff',
+    // borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    width: screenWidth * 0.6,
+    maxWidth: '100%',
+    flexShrink: 1, // Permite que o texto encolha se necessário
+    lineHeight: 32, // Ajuste a altura da linha para melhor legibilidade
   },
   cardContainer: {
     marginTop: 40,
@@ -275,6 +327,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
+    borderColor: '#000',
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   cardText: {
     marginTop: 10,
@@ -342,6 +404,19 @@ sidebarHeader: {
 sidebarTitle: {
   fontSize: 18,
   fontWeight: 'bold',
+},
+// Submodals:
+optionContent: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+},
+optionIcon: {
+  marginRight: 10,
+},
+optionText: {
+  flex: 1,
+  fontSize: 16,
 },
 
 });
