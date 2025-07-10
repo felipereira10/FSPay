@@ -3,8 +3,13 @@ from routes.auth import router as auth_router
 from core.database import create_tables
 from fastapi.middleware.cors import CORSMiddleware
 from routes.users import router as users_router
+from dotenv import load_dotenv
+
+import os
 
 app = FastAPI()
+
+load_dotenv()  # Carrega as variáveis de ambiente do arquivo .env
 
 @app.on_event("startup")
 def startup():

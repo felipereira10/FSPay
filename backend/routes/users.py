@@ -5,6 +5,7 @@ from models.user import RoleEnum, User
 from schemas.user import UserOut, UserUpdate
 from middlewares.auth import get_current_user
 from typing import List
+from fastapi.responses import JSONResponse
 import shutil
 import os
 
@@ -71,17 +72,26 @@ def delete_user(
     db.commit()
     return {"detail": "Usuário excluído com sucesso"}
 
-// Upload profile picture
-@router.post("/users/upload-profile-pic")
-async def upload_profile_picture(file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
-    file_path = f"static/profile_pics/{current_user.id}_{file.filename}"
+# Upload profile picture
+@router.post("/upload-profile-pic")
+async def upload_profile_picture(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    file_dir = "static/profile_pics"
+    os.makedirs(file_dir, exist_ok=True)
+    file_path = os.path.join(file_dir, f"{current_user.id}_{file.filename}")
     
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
     # Atualiza a URL da imagem no banco
     user = db.query(User).filter(User.id == current_user.id).first()
-    user.profile_image = file_path
-    db.commit()
+    if user:
+        user.profile_image = file_path
+        db.commit()
+    else:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
-    return JSONResponse({"message": "Imagem salva com sucesso", "path": file_path})
+    return JSONResponse(content={"message": "Imagem salva com sucesso", "path": file_path})

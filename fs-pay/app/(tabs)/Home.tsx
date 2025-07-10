@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import Loading from '@/components/Loading';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -16,7 +17,7 @@ export default function Home() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [subModalVisible, setSubModalVisible] = useState(false);
-  const [subModalType, setSubModalType] = useState<'photo' | 'edit' | null>(null);
+  const [subModalType, setSubModalType] = useState<'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' | null>(null);
   const router = useRouter();
   const balance = 20530.75;
 
@@ -55,7 +56,7 @@ export default function Home() {
   };
 
 
-  const openSubModal = (type: 'photo' | 'edit') => {
+  const openSubModal = (type: 'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' ) => {
     setSubModalType(type);
     setSubModalVisible(true);
   };
@@ -135,11 +136,35 @@ export default function Home() {
           </View>
 
           <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('photo')}>
-            <Text>Mudar Foto de Perfil</Text>
+            <Text>Mudar foto de perfil</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('edit')}>
-            <Text>Editar Informações</Text>
+          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('account')}>
+            <Text>Minha conta</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('security')}>
+            <Text>Central de segurança</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('service')}>
+            <Text>Meus serviços</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('privacy')}>
+            <Text>Privacidade</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('help')}>
+            <Text>Central de ajuda</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('accountpj')}>
+            <Text>Abrir conta PJ</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('about')}>
+            <Text>Sobre o aplicativo</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -161,13 +186,28 @@ export default function Home() {
         <View style={styles.subModalBackground}>
           <View style={styles.subModalContainer}>
             <Text style={styles.subModalTitle}>
-              {subModalType === 'photo' ? 'Mudar Foto de Perfil' : 'Editar Informações'}
+              {{
+                photo: 'Mudar Foto de Perfil',
+                account: 'Minha Conta',
+                security: 'Central de Segurança',
+                service: 'Meus Serviços',
+                privacy: 'Privacidade',
+                help: 'Central de Ajuda',
+                accountpj: 'Abrir Conta PJ',
+                about: 'Sobre o Aplicativo',
+              }[subModalType ?? 'about']}
             </Text>
 
             {subModalType === 'photo' && (
               <TouchableOpacity onPress={pickImage} style={styles.optionButton}>
                 <Text>Selecionar Imagem</Text>
               </TouchableOpacity>
+            )}
+
+            {(subModalType !== 'photo') && (
+              <Text style={{ marginTop: 10 }}>
+                Conteúdo da opção <Text style={{ fontWeight: 'bold' }}>{subModalType}</Text> vai aqui.
+              </Text>
             )}
 
             <TouchableOpacity onPress={closeSubModal} style={{ marginTop: 20 }}>
