@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Date, Enum
 from core.database import Base
+from sqlalchemy import Column, Boolean
 import enum
 
 class RoleEnum(enum.Enum):
@@ -18,3 +19,4 @@ class User(Base):
     birthdate = Column(Date)
     phone = Column(String(20))
     role = Column(Enum(RoleEnum), default=RoleEnum.user, nullable=False)
+    is_approved = Column(Boolean, default=False)

@@ -22,13 +22,17 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/signup", response_model=UserOut)
+@router.post("/signup")
 def signup(user: UserCreate, db: Session = Depends(get_db)):
-    return create_user(db, user)
+    new_user = create_user(db, user)
+    return {"message": "Cadastro enviado para análise, aguarde aprovação."}
 
 @router.post("/login")
 def login(data: LoginData, db: Session = Depends(get_db)):
     user = authenticate_user(db, data.email, data.password)
+    if not user.is_approved:
+        raise HTTPException(status_code=403, detail="Usuário ainda não aprovado pelo admin")
+
     if not user:
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
 

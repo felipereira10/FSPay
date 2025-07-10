@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { getAllUsers, deleteUser } from '../../services/api';
+import { getAllUsers, deleteUser, approveUser } from '../../services/api';
 import Toast from 'react-native-toast-message';
+
 
 export default function UsersAdmin() {
   const [users, setUsers] = useState([]);
@@ -42,11 +43,27 @@ export default function UsersAdmin() {
     ]);
   };
 
+  const handleApprove = async (userId: any) => {
+    try {
+      await approveUser(userId); // nova função no api.js
+      Toast.show({ type: 'success', text1: 'Usuário aprovado!' });
+      fetchUsers();
+    } catch {
+      Alert.alert('Erro', 'Não foi possível aprovar o usuário');
+    }
+  };
+
   const renderUser = ({ item }: any) => (
     <View style={styles.userCard}>
       <Text style={styles.userText}>Nome: {item.fullName}</Text>
       <Text style={styles.userText}>Email: {item.email}</Text>
       <Text style={styles.userText}>Cargo: {item.role}</Text>
+      {item.role !== 'admin' && !item.is_approved && (
+        <TouchableOpacity onPress={() => handleApprove(item.id)}>
+          <Text style={{ color: 'green' }}>Aprovar</Text>
+        </TouchableOpacity>
+      )}
+
       <View style={styles.actions}>
         <TouchableOpacity onPress={() => router.push(`/admin/EditUser/${item.id}`)}>
           <Text style={styles.editBtn}>Editar</Text>

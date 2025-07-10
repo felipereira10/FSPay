@@ -6,6 +6,7 @@ from schemas.user import UserOut, UserUpdate
 from middlewares.auth import get_current_user
 from typing import List
 from fastapi.responses import JSONResponse
+from sqlalchemy import Column, Boolean
 import shutil
 import os
 
@@ -95,3 +96,16 @@ async def upload_profile_picture(
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
     return JSONResponse(content={"message": "Imagem salva com sucesso", "path": file_path})
+
+@router.put("/{user_id}/approve")
+def approve_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if not is_admin(current_user):
+        raise HTTPException(status_code=403, detail="Acesso negado")
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+    user.is_approved = True
+    db.commit()
+    return {"detail": "Usuário aprovado com sucesso"}

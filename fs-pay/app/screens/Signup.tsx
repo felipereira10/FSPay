@@ -95,35 +95,41 @@ export default function SignupScreen() {
     if (!birthdate) return Toast.show({ type: 'error', text1: 'Data de nascimento é obrigatória' });
 
     setLoading(true);
-    try {
-      // Envia para backend só números e data no formato ISO (yyyy-mm-dd)
-      const isoBirthdate = birthdate.split('/').reverse().join('-');
 
-      const data = await signupUser(email, password, {
-        fullName,
-        cpf: cpf.replace(/\D/g, ''),
-        birthdate: isoBirthdate,
-        phone: phone.replace(/\D/g, ''),
-      });
-      Toast.show({ type: 'success', text1: 'Cadastro feito! Faça login agora.' });
-      router.push('/screens/Login');
-    } catch (error: any) {
-      if (error.response?.status === 400) {
-        const detail = error.response.data?.detail;
-        if (detail === 'Email já cadastrado') {
-          Toast.show({ type: 'error', text1: 'Este email já está cadastrado. Faça login ou recupere sua senha.' });
-        } else if (detail === 'CPF já cadastrado') {
-          Toast.show({ type: 'error', text1: 'Este CPF já está cadastrado.' });
-        } else {
-          Toast.show({ type: 'error', text1: 'Erro no cadastro', text2: detail || error.message });
-        }
-      } else {
-        Toast.show({ type: 'error', text1: 'Erro no cadastro', text2: error.message });
-      }
-    } finally {
-      setLoading(false);
-    }
+async function handleSignup() {
+  // ... tuas validações
+
+  setLoading(true);
+
+  try {
+    const isoBirthdate = birthdate.split('/').reverse().join('-');
+
+    const data = await signupUser(email, password, {
+      fullName,
+      cpf: cpf.replace(/\D/g, ''),
+      birthdate: isoBirthdate,
+      phone: phone.replace(/\D/g, ''),
+    });
+
+    console.log('[handleSignup] Resposta:', data);
+
+    Toast.show({
+      type: 'success',
+      text1: 'Cadastro enviado para análise!',
+      text2: 'Aguarde aprovação para acessar o app.',
+    });
+
+    router.push('/screens/Login');
+
+  } catch (error: any) {
+    const detail = error.message;
+    // teus erros continuam
+  } finally {
+    setLoading(false);
   }
+}
+
+  
 
   return (
     <KeyboardAvoidingView
@@ -135,7 +141,7 @@ export default function SignupScreen() {
         keyboardShouldPersistTaps="handled"
       >
 
-        <FloatingDollar />
+        {/* <FloatingDollar /> */}
 
         <TextInput
           placeholder="Nome completo"
@@ -229,6 +235,7 @@ export default function SignupScreen() {
     </KeyboardAvoidingView>
   );
 }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -283,3 +290,4 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
+

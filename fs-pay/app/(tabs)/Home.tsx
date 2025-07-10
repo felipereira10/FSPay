@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
   ScrollView, Modal, Dimensions, Image
@@ -9,6 +9,7 @@ import { useRouter } from 'expo-router';
 import Loading from '@/components/Loading';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // Submodals
+import UsersAdmin from '@/app/admin/UsersAdmin';
 import AccountInfo from '@/components/SubModals/AccountInfo';
 import SecurityCenter from '@/components/SubModals/SecurityCenter';
 import PrivacySettings from '@/components/SubModals/Privacy';
@@ -25,10 +26,22 @@ export default function Home() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [subModalVisible, setSubModalVisible] = useState(false);
-  const [subModalType, setSubModalType] = useState<'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' | null>(null);
+  const [subModalType, setSubModalType] = useState< 'admin' | 'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' | null>(null);
   const router = useRouter();
   const balance = 20530.75;
   const [confirmLogoutVisible, setConfirmLogoutVisible] = useState(false);
+  const [authData, setAuthData] = useState<any>(null);
+
+  useEffect(() => {
+    const loadAuthData = async () => {
+      const token = await AsyncStorage.getItem('userData');
+      if (token) {
+        setAuthData(JSON.parse(token));
+      }
+    };
+    loadAuthData();
+  }, []);
+
 
   const toggleBalance = () => setShowBalance(!showBalance);
 
@@ -65,7 +78,7 @@ export default function Home() {
   };
 
 
-  const openSubModal = (type: 'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' ) => {
+  const openSubModal = (type: 'admin' | 'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' ) => {
     setSubModalType(type);
     setSubModalVisible(true);
   };
@@ -73,13 +86,6 @@ export default function Home() {
   const closeSubModal = () => {
     setSubModalVisible(false);
     setSubModalType(null);
-  };
-
-  const logout = () => {
-    // Coloque aqui sua lógica de logout
-    console.log('Deslogando...');
-    setModalVisible(false);
-    router.replace('/login'); // redireciona pro login
   };
 
   const initialCards = [
@@ -144,6 +150,15 @@ export default function Home() {
             </TouchableOpacity>
           </View>
 
+          {authData?.role === 'admin' && (
+          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('admin')}>
+            <View style={styles.optionContent}>
+              <Ionicons name="person-outline" size={20} color="#333" style={styles.optionIcon} />
+              <Text style={styles.optionText}>Administração</Text>
+              <Ionicons name="chevron-forward-outline" size={18} color="#888" />
+            </View>
+          </TouchableOpacity>
+          )}
           <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('photo')}>
             <View style={styles.optionContent}>
               <Ionicons name="image-outline" size={20} color="#333" style={styles.optionIcon} />
@@ -256,6 +271,8 @@ export default function Home() {
           <View style={styles.subModalContainer}>
             {(() => {
               switch (subModalType) {
+                case 'admin':
+                  return <UsersAdmin />;
                 case 'photo':
                   return (
                     <TouchableOpacity onPress={pickImage} style={styles.optionButton}>

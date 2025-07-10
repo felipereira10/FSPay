@@ -19,9 +19,9 @@ let API_BASE_URL = '';
 if (isExpoGo) {
   // ⚠️ Coloque aqui o IP local do seu computador (quando usar Expo Go)
   // IP da rede do trampo
-  // API_BASE_URL = 'http://192.168.0.53:8000';
+  API_BASE_URL = 'http://192.168.0.53:8000';
   // IP da rede de casa
-  API_BASE_URL = 'http://192.168.1.70:8000';
+  //API_BASE_URL = 'http://192.168.1.70:8000';
 } else if (Platform.OS === 'android') {
   // Android Studio emulador
   API_BASE_URL = 'http://10.0.2.2:8000';
@@ -59,7 +59,7 @@ export async function loginUser(email: string, password: string) {
     return mockLogin(email, password);
   }
   try {
-    console.log('[loginUser] Enviando para backend:', email, password);
+    console.log('[loginUser] Enviando para backend:', email);
     const response = await axios.post(`${API_BASE_URL}/auth/login`, {
       email,
       password,
@@ -86,7 +86,8 @@ export async function loginUser(email: string, password: string) {
       const data = err?.response?.data;
 
       if (status === 401) {
-        throw new Error('Credenciais inválidas');
+        const detail = data?.detail || 'Credenciais inválidas';
+        throw new Error(detail);
       }
 
       console.log('[loginUser] Erro inesperado:', data || err.message);
@@ -95,7 +96,11 @@ export async function loginUser(email: string, password: string) {
   }
 
 // Signup
-export const signupUser = async (email: string, password: string, extraData: { fullName: string; cpf: string; birthdate: string; phone: string; }) => {
+export const signupUser = async (
+  email: string,
+  password: string,
+  extraData: { fullName: string; cpf: string; birthdate: string; phone: string; }
+) => {
   try {
     const res = await api.post('/auth/signup', {
       email,
@@ -103,16 +108,25 @@ export const signupUser = async (email: string, password: string, extraData: { f
       ...extraData,
     });
     return res.data;
-  } catch (err) {
-    console.warn('[signupUser] Backend offline, mock não disponível para cadastro.');
-    throw new Error('Backend offline. Não foi possível cadastrar.');
+  } catch (err: any) {
+    const status = err?.response?.status;
+    const detail = err?.response?.data?.detail;
+
+    console.warn('[signupUser] Erro:', status, detail);
+
+    if (status === 400 && detail) {
+      throw new Error(detail);
+    }
+
+    throw new Error('Erro inesperado no cadastro');
   }
 };
+
 
 // Get user by ID
 export const getAllUsers = async () => {
   const token = await AsyncStorage.getItem('userToken');
-  const res = await api.get('/users/admin/users', {
+  const res = await api.get('/users/admin', {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -150,5 +164,12 @@ export const updateUser = async (userId: number, updatedData: any) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+  });
+};
+
+export const approveUser = async (userId: any) => {
+  const token = await AsyncStorage.getItem('userToken');
+  await api.put(`/users/users/${userId}/approve`, {}, {
+    headers: { Authorization: `Bearer ${token}` },
   });
 };

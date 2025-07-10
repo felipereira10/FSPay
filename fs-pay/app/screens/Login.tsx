@@ -36,6 +36,7 @@ export default function LoginScreen() {
       }
 
       await AsyncStorage.setItem('userToken', result.token);
+      await AsyncStorage.setItem('userData', JSON.stringify(result.user));
       router.push('/Home');
     } catch (err: any) {
       console.log(err);
