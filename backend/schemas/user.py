@@ -16,6 +16,10 @@ class UserOut(BaseModel):
     fullName: str
     email: EmailStr
     role: str
+    cpf: str
+    phone: str
+    birthdate: date
+    is_approved: Optional[bool] = None
 
     class Config:
         from_attributes = True

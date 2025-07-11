@@ -11,9 +11,12 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { getUserById, updateUser } from '../../../services/api';
 import Toast from 'react-native-toast-message';
+import Modal from 'react-native-modal';
+import LottieView from 'lottie-react-native';
 
 export default function EditUser() {
-  const { id } = useLocalSearchParams(); // pega o ID da URL
+  const { id } = useLocalSearchParams();
+  const [users, setUsers] = useState([]);
   const router = useRouter();
   const [form, setForm] = useState({
     fullName: '',
@@ -23,6 +26,8 @@ export default function EditUser() {
     birthdate: '',
     role: '',
   });
+  
+  const [showSuccess, setShowSuccess] = useState(false)
 
   useEffect(() => {
     fetchUser();
@@ -36,7 +41,7 @@ export default function EditUser() {
         email: data.email || '',
         phone: data.phone || '',
         cpf: data.cpf || '',
-        birthdate: data.birthdate || '',
+        birthdate: data.birthdate?.split('T')[0] || '',
         role: data.role || '',
       });
     } catch (err) {
@@ -47,8 +52,11 @@ export default function EditUser() {
   const handleUpdate = async () => {
     try {
       await updateUser(Number(id), form);
-      Toast.show({ type: 'success', text1: 'Usuário atualizado com sucesso' });
-      router.back();
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        router.back();
+      }, 2000);
     } catch (err) {
       Alert.alert('Erro', 'Erro ao atualizar o usuário');
     }
@@ -106,6 +114,14 @@ export default function EditUser() {
       <TouchableOpacity onPress={handleUpdate} style={styles.button}>
         <Text style={styles.buttonText}>Salvar Alterações</Text>
       </TouchableOpacity>
+
+      {/* Modal de sucesso */}
+      <Modal isVisible={showSuccess}>
+        <View style={styles.modalContentSucess}>
+          <LottieView source={require('../../../assets/check-success.json')} autoPlay loop={false} style={{ width: 200, height: 200 }} />
+          <Text style={{ color: 'green', fontSize: 18, marginTop: 10, fontWeight: 'bold', }}>Alterado com sucesso!</Text>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -134,5 +150,14 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontWeight: 'bold',
+  },
+  modalContentSucess: { 
+    backgroundColor: '#a2eba2e3', 
+    padding: 10, 
+    alignItems: 'center', 
+    borderRadius: 10,
+    width: '70%',
+    height: '40%',
+    alignSelf: 'center',
   },
 });

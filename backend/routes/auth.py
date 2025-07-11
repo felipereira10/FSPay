@@ -44,6 +44,7 @@ def login(data: LoginData, db: Session = Depends(get_db)):
         "user": {
             "id": user.id,
             "fullName": user.fullName,
+            "cpf": user.cpf,
             "email": user.email,
             "role": user.role.value if hasattr(user.role, 'value') else user.role,
         }

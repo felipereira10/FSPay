@@ -137,7 +137,7 @@ export const getAllUsers = async () => {
 // Delete user
 export const deleteUser = async (userId: number) => {
   const token = await AsyncStorage.getItem('userToken');
-  await api.delete(`/users/users/${userId}`, {
+  await api.delete(`/users/${userId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -148,7 +148,7 @@ export const deleteUser = async (userId: number) => {
 // Usado na tela de edição de usuário
 export const getUserById = async (userId: number) => {
   const token = await AsyncStorage.getItem('userToken');
-  const res = await api.get(`/users/users/${userId}`, {
+  const res = await api.get(`/users/${userId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -160,16 +160,14 @@ export const getUserById = async (userId: number) => {
 // Usado na tela de edição de usuário
 export const updateUser = async (userId: number, updatedData: any) => {
   const token = await AsyncStorage.getItem('userToken');
-  await api.put(`/users/users/${userId}`, updatedData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+  await api.put(`/users/${userId}`, updatedData, {
+    headers: { Authorization: `Bearer ${token}` },
   });
 };
 
 export const approveUser = async (userId: any) => {
   const token = await AsyncStorage.getItem('userToken');
-  await api.put(`/users/users/${userId}/approve`, {}, {
+  await api.put(`/users/${userId}/approve`, {}, {
     headers: { Authorization: `Bearer ${token}` },
   });
 };

@@ -26,7 +26,7 @@ export default function Home() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [subModalVisible, setSubModalVisible] = useState(false);
-  const [subModalType, setSubModalType] = useState< 'admin' | 'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' | null>(null);
+  const [subModalType, setSubModalType] = useState< 'admin' | 'adminMenu' | 'adminUsers' | 'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' | null>(null);
   const router = useRouter();
   const balance = 20530.75;
   const [confirmLogoutVisible, setConfirmLogoutVisible] = useState(false);
@@ -78,7 +78,7 @@ export default function Home() {
   };
 
 
-  const openSubModal = (type: 'admin' | 'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' ) => {
+  const openSubModal = (type: 'admin' | 'adminMenu' | 'adminUsers' | 'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' ) => {
     setSubModalType(type);
     setSubModalVisible(true);
   };
@@ -151,13 +151,14 @@ export default function Home() {
           </View>
 
           {authData?.role === 'admin' && (
-          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('admin')}>
+          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('adminMenu')}>
             <View style={styles.optionContent}>
-              <Ionicons name="person-outline" size={20} color="#333" style={styles.optionIcon} />
+              <Ionicons name="people-outline" size={20} color="#333" style={styles.optionIcon} />
               <Text style={styles.optionText}>Administração</Text>
               <Ionicons name="chevron-forward-outline" size={18} color="#888" />
             </View>
           </TouchableOpacity>
+
           )}
           <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('photo')}>
             <View style={styles.optionContent}>
@@ -271,7 +272,23 @@ export default function Home() {
           <View style={styles.subModalContainer}>
             {(() => {
               switch (subModalType) {
-                case 'admin':
+                case 'adminMenu':
+                  return (
+                    <View>
+                      <TouchableOpacity
+                        onPress={() => {
+                          closeSubModal();
+                          router.push('/admin/UsersAdmin'); // ou o caminho da página que criou
+                        }}
+                      >
+                        <Text style={{ fontSize: 18, padding: 10 }}>Visualizar usuários</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => {/* outra opção admin */}}>
+                        <Text style={{ fontSize: 18, padding: 10 }}>Outra ação</Text>
+                      </TouchableOpacity>
+                    </View>
+                  );
+                case 'adminUsers':
                   return <UsersAdmin />;
                 case 'photo':
                   return (
@@ -463,7 +480,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
   },
   subModalContainer: {
-    width: '80%',
+    width: '100%',
     backgroundColor: '#f3ca4c',
     borderRadius: 10,
     padding: 20,

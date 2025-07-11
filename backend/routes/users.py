@@ -31,7 +31,28 @@ def get_all_users(
     if not is_admin(current_user):
         raise HTTPException(status_code=403, detail="Acesso negado")
     
-    return db.query(User).all()
+    users = db.query(User).all()
+    for u in users:
+        print(u.id, u.fullName, u.cpf, u.phone, u.birthdate, u.is_approved)
+    return users
+
+
+# GET user by ID
+@router.get("/{user_id}", response_model=UserOut)
+def get_user_by_id(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+    if not is_admin(current_user) and current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Você não pode visualizar esse usuário")
+
+    return user
+
 
 # PUT - atualizar um usuário
 @router.put("/{user_id}", response_model=UserOut)
@@ -97,15 +118,18 @@ async def upload_profile_picture(
 
     return JSONResponse(content={"message": "Imagem salva com sucesso", "path": file_path})
 
-@router.put("/{user_id}/approve")
+# Approve User
+@router.put("/{user_id}/approve", response_model=UserOut)
 def approve_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if not is_admin(current_user):
-        raise HTTPException(status_code=403, detail="Acesso negado")
-
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
+    if not is_admin(current_user):
+        raise HTTPException(status_code=403, detail="Você não tem permissão")
+
     user.is_approved = True
     db.commit()
-    return {"detail": "Usuário aprovado com sucesso"}
+    db.refresh(user)
+    return user
+

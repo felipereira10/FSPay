@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Date, Enum
+from datetime import datetime
+from sqlalchemy import Column, DateTime, Integer, String, Date, Enum
 from core.database import Base
 from sqlalchemy import Column, Boolean
 import enum
@@ -15,8 +16,10 @@ class User(Base):
     fullName = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False, unique=True)
     password_hash = Column(String(255), nullable=False)
-    cpf = Column(String(14), unique=True)
-    birthdate = Column(Date)
-    phone = Column(String(20))
+    cpf = Column(String(14), unique=True, nullable=False)
+    birthdate = Column(Date, nullable=False)
+    phone = Column(String(20), nullable=False)
     role = Column(Enum(RoleEnum), default=RoleEnum.user, nullable=False)
-    is_approved = Column(Boolean, default=False)
+    profile_image = Column(String(255), nullable=True)
+    createdAt = Column(DateTime, default=datetime.utcnow)
+    is_approved = Column(Boolean, default=False, nullable=False)
