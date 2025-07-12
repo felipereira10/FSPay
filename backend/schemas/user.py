@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Literal, Optional
-from datetime import date
+from datetime import date, datetime
 
 class UserCreate(BaseModel):
     fullName: str
@@ -20,6 +20,8 @@ class UserOut(BaseModel):
     phone: str
     birthdate: date
     is_approved: Optional[bool] = None
+    createdAt: datetime
+    updatedAt: Optional[datetime]
 
     class Config:
         from_attributes = True

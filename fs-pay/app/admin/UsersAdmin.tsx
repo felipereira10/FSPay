@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { getAllUsers, deleteUser, approveUser } from '../../services/api';
 import Toast from 'react-native-toast-message';
@@ -7,11 +7,24 @@ import Modal from 'react-native-modal';
 import LottieView from 'lottie-react-native';
 
 export default function UsersAdmin() {
-  const [users, setUsers] = useState([]);
+  type User = {
+    id: number;
+    fullName: string;
+    email: string;
+    cpf: string;
+    phone: string;
+    birthdate: string;
+    role: string;
+    is_approved: boolean;
+  };
+
+  const [users, setUsers] = useState<User[]>([]);
   const [showSuccess, setShowSuccess] = useState(false)
   const router = useRouter();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState<null | boolean>(null);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const fetchUsers = async () => {
     try {
@@ -57,7 +70,7 @@ export default function UsersAdmin() {
     }
   };
 
-  const renderUser = ({ item }: { item: any }) => {
+  const renderUser = ({ item }: { item: User }) => {
     return (
       <View style={styles.userCard}>
         <Text style={styles.userText}>Nome: {item.fullName}</Text>
@@ -66,6 +79,8 @@ export default function UsersAdmin() {
         <Text style={styles.userText}>Celular: {item.phone}</Text>
         <Text style={styles.userText}>Nascimento: {item.birthdate?.toString()}</Text>
         <Text style={styles.userText}>Cargo: {item.role}</Text>
+
+
         {item.role !== 'admin' && !item.is_approved && (
           <TouchableOpacity onPress={() => handleApprove(item.id)}>
             <Text style={{ color: 'green' }}>Aprovar</Text>
@@ -87,14 +102,65 @@ export default function UsersAdmin() {
     );
   };
 
+  const filteredUsers = users.filter((user) => {
+    const term = searchTerm.toLowerCase();
+    const matchesText =
+      user.fullName.toLowerCase().includes(term) ||
+      user.email.toLowerCase().includes(term) ||
+      user.cpf.includes(term) ||
+      user.phone.includes(term);
+
+    const matchesStatus =
+      filterStatus === null || user.is_approved === filterStatus;
+
+    return matchesText && matchesStatus;
+  });
+
+
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Buscar por nome, email, CPF ou telefone"
+          placeholderTextColor="#888"
+          value={searchTerm}
+          onChangeText={setSearchTerm}
+        />
+        <TouchableOpacity style={styles.reloadButton} onPress={fetchUsers}>
+          <Text style={{ color: '#fff', fontWeight: 'bold' }}>⟳</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.filterButtons}>
+        <TouchableOpacity
+          onPress={() => setFilterStatus(null)}
+          style={[styles.filterBtn, filterStatus === null && styles.activeFilter]}
+        >
+          <Text>Todos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setFilterStatus(true)}
+          style={[styles.filterBtn, filterStatus === true && styles.activeFilter]}
+        >
+          <Text>Aprovados</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setFilterStatus(false)}
+          style={[styles.filterBtn, filterStatus === false && styles.activeFilter]}
+        >
+          <Text>Pendentes</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
-        data={users}
+        data={filteredUsers}
         keyExtractor={(item: any) => item.id.toString()}
         renderItem={renderUser}
       />
+    
+
+
       <Modal isVisible={showSuccess}>
         <View style={styles.modalContentSucess}>
           <LottieView source={require('../../assets/check-success.json')} autoPlay loop={false} style={{ width: 150, height: 150 }} />
@@ -218,5 +284,39 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#999',
     alignItems: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+},
+  searchInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 5,
+    marginRight: 10,
+    backgroundColor: '#f1f1f1',
+  },
+  reloadButton: {
+    backgroundColor: '#f3ca4c',
+    padding: 10,
+    borderRadius: 5,
+  },
+  filterButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 10,
+  },
+  filterBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+  },
+  activeFilter: {
+    backgroundColor: '#f3ca4c',
   },
 });

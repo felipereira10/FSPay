@@ -25,6 +25,8 @@ export default function EditUser() {
     cpf: '',
     birthdate: '',
     role: '',
+    createdAt: '',
+    updatedAt: '',
   });
   
   const [showSuccess, setShowSuccess] = useState(false)
@@ -43,6 +45,8 @@ export default function EditUser() {
         cpf: data.cpf || '',
         birthdate: data.birthdate?.split('T')[0] || '',
         role: data.role || '',
+        createdAt: data.createdAt || '',
+        updatedAt: data.updatedAt || '',
       });
     } catch (err) {
       Alert.alert('Erro', 'Não foi possível carregar os dados');
@@ -67,6 +71,7 @@ export default function EditUser() {
   };
 
   return (
+    
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.label}>Nome</Text>
       <TextInput
@@ -105,11 +110,23 @@ export default function EditUser() {
       />
 
       <Text style={styles.label}>Função (role)</Text>
-      <TextInput
-        value={form.role}
-        onChangeText={(v) => handleChange('role', v)}
-        style={styles.input}
-      />
+      <View style={styles.roleContainer}>
+        {['admin', 'user', 'employee'].map((option) => (
+          <TouchableOpacity
+            key={option}
+            onPress={() => handleChange('role', option)}
+            style={[
+              styles.roleButton,
+              form.role === option && styles.roleButtonSelected,
+            ]}
+          >
+            <Text style={{ color: form.role === option ? '#fff' : '#000' }}>
+              {option}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
 
       <TouchableOpacity onPress={handleUpdate} style={styles.button}>
         <Text style={styles.buttonText}>Salvar Alterações</Text>
@@ -159,5 +176,19 @@ const styles = StyleSheet.create({
     width: '70%',
     height: '40%',
     alignSelf: 'center',
+  },
+  roleContainer: {
+    flexDirection: 'row',
+    marginBottom: 15,
+  },
+  roleButton: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  roleButtonSelected: {
+    backgroundColor: '#f3ca4c',
   },
 });
