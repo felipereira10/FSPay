@@ -19,9 +19,9 @@ let API_BASE_URL = '';
 if (isExpoGo) {
   // ⚠️ Coloque aqui o IP local do seu computador (quando usar Expo Go)
   // IP da rede do trampo
-  API_BASE_URL = 'http://192.168.0.53:8000';
+  // API_BASE_URL = 'http://192.168.0.53:8000';
   // IP da rede de casa
-  //API_BASE_URL = 'http://192.168.1.70:8000';
+  API_BASE_URL = 'http://192.168.1.70:8000';
 } else if (Platform.OS === 'android') {
   // Android Studio emulador
   API_BASE_URL = 'http://10.0.2.2:8000';
