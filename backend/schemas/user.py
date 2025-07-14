@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 from typing import Literal, Optional
 from datetime import date, datetime
 
@@ -21,14 +21,12 @@ class UserOut(BaseModel):
     birthdate: date
     is_approved: Optional[bool] = None
     createdAt: datetime
-    updatedAt: Optional[datetime]
+    updatedAt: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True, extra="ignore")
 
 class UserUpdate(BaseModel):
     fullName: Optional[str]
-    email: Optional[EmailStr]
     cpf: Optional[str]
     birthdate: Optional[date]
     phone: Optional[str]

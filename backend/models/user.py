@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, DateTime, Integer, String, Date, Enum
+from sqlalchemy import TIMESTAMP, Column, DateTime, Integer, String, Date, Enum
 from core.database import Base
 from sqlalchemy import Column, Boolean
 import enum
@@ -22,4 +22,10 @@ class User(Base):
     role = Column(Enum(RoleEnum), default=RoleEnum.user, nullable=False)
     profile_image = Column(String(255), nullable=True)
     createdAt = Column(DateTime, default=datetime.utcnow)
+    updatedAt = Column(
+        TIMESTAMP,
+        nullable=True,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow
+    )
     is_approved = Column(Boolean, default=False, nullable=False)

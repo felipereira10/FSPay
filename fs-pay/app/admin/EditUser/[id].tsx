@@ -72,6 +72,7 @@ export default function EditUser() {
         ...form,
         birthdate: parseDateToISO(form.birthdate),
       };
+      console.log("Enviando payload:", payload);
       await updateUser(Number(id), payload);
       setShowSuccess(true);
       setTimeout(() => {
@@ -110,7 +111,7 @@ export default function EditUser() {
       <Text style={styles.label}>Telefone</Text>
       <MaskInput
         value={form.phone}
-        onChangeText={(masked, unmasked) => handleChange('phone', unmasked)}
+        onChangeText={(masked: string, unmasked: string) => handleChange('phone', unmasked)}
         mask={Masks.BRL_PHONE}
         keyboardType="numeric"
         style={styles.input}
@@ -119,7 +120,7 @@ export default function EditUser() {
       <Text style={styles.label}>CPF</Text>
       <MaskInput
         value={form.cpf}
-        onChangeText={(masked, unmasked) => handleChange('cpf', unmasked)}
+        onChangeText={(masked: string, unmasked: string) => handleChange('cpf', unmasked)}
         mask={Masks.BRL_CPF}
         keyboardType="numeric"
         style={styles.input}
@@ -128,7 +129,7 @@ export default function EditUser() {
       <Text style={styles.label}>Data de Nascimento</Text>
       <MaskInput
         value={form.birthdate}
-        onChangeText={(masked) => handleChange('birthdate', masked)}
+        onChangeText={(masked: string) => handleChange('birthdate', masked)}
         mask={Masks.DATE_DDMMYYYY}
         keyboardType="numeric"
         style={styles.input}
