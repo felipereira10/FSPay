@@ -111,7 +111,7 @@ export default function UsersAdmin() {
       user.phone.includes(term);
 
     const matchesStatus =
-      filterStatus === null || user.is_approved === filterStatus;
+      filterStatus === null || !!user.is_approved === filterStatus;
 
     return matchesText && matchesStatus;
   });
@@ -153,12 +153,18 @@ export default function UsersAdmin() {
           <Text>Pendentes</Text>
         </TouchableOpacity>
       </View>
+
+      {filteredUsers.length === 0 && filterStatus === false ? (
+        <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 16, color: '#333' }}>
+          Sem usuários para aprovar
+        </Text>
+      ) : (
       <FlatList
         data={filteredUsers}
         keyExtractor={(item: any) => item.id.toString()}
         renderItem={renderUser}
       />
-    
+      )}
 
 
       <Modal isVisible={showSuccess}>
