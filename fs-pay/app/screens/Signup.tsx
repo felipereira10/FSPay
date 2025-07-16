@@ -8,6 +8,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Button,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useRouter } from 'expo-router';
@@ -17,6 +18,14 @@ import FloatingDollar from '../implements/FloatingDollar';
 
 export default function SignupScreen() {
   const router = useRouter();
+
+    const showToast = () => {
+      Toast.show({
+        type: 'success',
+        text1: 'Transferência realizada!',
+        text2: 'Você realizou uma transferência com sucesso 👋'
+      });
+    }
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -89,47 +98,44 @@ export default function SignupScreen() {
     if (!validateEmail(email)) return Toast.show({ type: 'error', text1: 'Email inválido' });
     if (password.length < 6) return Toast.show({ type: 'error', text1: 'Senha muito curta' });
     if (password !== confirmPassword) {
-        return Toast.show({ type: 'error', text1: 'As senhas não coincidem' });
+      return Toast.show({ type: 'error', text1: 'As senhas não coincidem' });
     }
     if (!validateCPF(cpf)) return Toast.show({ type: 'error', text1: 'CPF inválido' });
     if (!birthdate) return Toast.show({ type: 'error', text1: 'Data de nascimento é obrigatória' });
 
     setLoading(true);
 
-async function handleSignup() {
-  // ... tuas validações
+    try {
+      const isoBirthdate = birthdate.split('/').reverse().join('-');
 
-  setLoading(true);
+      const data = await signupUser(email, password, {
+        fullName,
+        cpf: cpf.replace(/\D/g, ''),
+        birthdate: isoBirthdate,
+        phone: phone.replace(/\D/g, ''),
+      });
 
-  try {
-    const isoBirthdate = birthdate.split('/').reverse().join('-');
+      console.log('[handleSignup] Resposta:', data);
 
-    const data = await signupUser(email, password, {
-      fullName,
-      cpf: cpf.replace(/\D/g, ''),
-      birthdate: isoBirthdate,
-      phone: phone.replace(/\D/g, ''),
-    });
+      Toast.show({
+        type: 'success',
+        text1: 'Cadastro enviado para análise!',
+        text2: 'Aguarde aprovação para acessar o app.',
+      });
 
-    console.log('[handleSignup] Resposta:', data);
+      router.push('/screens/Login');
 
-    Toast.show({
-      type: 'success',
-      text1: 'Cadastro enviado para análise!',
-      text2: 'Aguarde aprovação para acessar o app.',
-    });
-
-    router.push('/screens/Login');
-
-  } catch (error: any) {
-    const detail = error.message;
-    // teus erros continuam
-  } finally {
-    setLoading(false);
+    } catch (error: any) {
+      console.log('[handleSignup] Erro:', error?.message || error);
+      Toast.show({
+        type: 'error',
+        text1: 'Erro no cadastro',
+        text2: error?.message || 'Tente novamente.',
+      });
+    } finally {
+      setLoading(false);
+    }
   }
-}
-
-  
 
   return (
     <KeyboardAvoidingView
@@ -231,16 +237,21 @@ async function handleSignup() {
         <TouchableOpacity onPress={handleSignup} style={styles.button} disabled={loading}>
           <Text style={styles.buttonText}>{loading ? 'Cadastrando...' : 'Cadastrar'}</Text>
         </TouchableOpacity>
+
+        <Button
+                title="Show Toast"
+                onPress={showToast}
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
-}
+
 
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#bf930d',
+    backgroundColor: '#118096',
     flexGrow: 1,
     justifyContent: 'center',
   },
@@ -256,13 +267,13 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   inputFocused: {
-    borderColor: '#f3ca4c',
+    borderColor: '#00ced1',
     borderWidth: 2,
-    backgroundColor: '#fffbe6',
+    backgroundColor: '#c6efef',
     borderRadius: 10,
   },
   button: {
-    backgroundColor: '#f3ca4c',
+    backgroundColor: '#00ced1',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',

@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { Redirect } from 'expo-router';
 import React from 'react';
-// import Toast from 'react-native-toast-message';
+import Toast from 'react-native-toast-message';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 

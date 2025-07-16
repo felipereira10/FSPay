@@ -138,7 +138,7 @@ export default function UsersAdmin() {
           onPress={() => setFilterStatus(null)}
           style={[styles.filterBtn, filterStatus === null && styles.activeFilter]}
         >
-          <Text>Todos</Text>
+          <Text style={{ color:'#fff' }}>Todos</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setFilterStatus(true)}
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#bf930d',
+    backgroundColor: '#118096',
   },
   button: {
     backgroundColor: '#1976d2',
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1f1f1',
   },
   reloadButton: {
-    backgroundColor: '#f3ca4c',
+    backgroundColor: '#00ced1',
     padding: 10,
     borderRadius: 5,
   },
@@ -314,15 +314,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 10,
+    color: '#00ced1'
   },
   filterBtn: {
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#00ced1',
     borderRadius: 5,
+  
   },
   activeFilter: {
-    backgroundColor: '#f3ca4c',
+    backgroundColor: '#00ced1',
   },
 });

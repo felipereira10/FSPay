@@ -37,6 +37,11 @@ export default function LoginScreen() {
 
       await AsyncStorage.setItem('userToken', result.token);
       await AsyncStorage.setItem('userData', JSON.stringify(result.user));
+
+      Toast.show({
+        type: 'success',
+        text1: 'Login realizado com sucesso!',
+      });
       router.push('/Home');
     } catch (err: any) {
       console.log(err);
@@ -93,7 +98,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        {error && <Text style={{ color: 'red' }}>{error}</Text>}
+        {error && <Text style={{ color: 'red', backgroundColor: '#fff' }}>{error}</Text>}
 
         <TouchableOpacity onPress={handleLogin} style={styles.buttonLogin}>
           <Text>Entrar</Text>
@@ -112,7 +117,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#40e0d0',
+    backgroundColor: '#118096',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
@@ -133,9 +138,9 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
   },
   inputFocused: {
-    borderColor: '#f3ca4c',
+    borderColor: '#00ced1',
     borderWidth: 2,
-    backgroundColor: '#fffbe6',
+    backgroundColor: '#c6efef',
   },
   passwordContainer: {
     flexDirection: 'row',
@@ -152,7 +157,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   buttonLogin: {
-    backgroundColor: '#20b2aa',
+    backgroundColor: '#00ced1',
     textAlign: 'center',
     padding: 20,
     borderRadius: 8,
