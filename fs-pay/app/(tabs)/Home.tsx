@@ -275,13 +275,14 @@ export default function Home() {
                 case 'adminMenu':
                   return (
                     <View>
+                      <Text style={{ fontSize: 18, padding: 10, fontWeight: 'bold', }}>Central Administrativa</Text>
                       <TouchableOpacity
                         onPress={() => {
                           closeSubModal();
-                          router.push('/admin/UsersAdmin'); // ou o caminho da página que criou
+                          router.push('/admin/UsersAdmin');
                         }}
                       >
-                        <Text style={{ fontSize: 18, padding: 10 }}>Visualizar usuários</Text>
+                        <Text style={{ fontSize: 18, padding: 10, }}>Visualizar usuários</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => {/* outra opção admin */}}>
                         <Text style={{ fontSize: 18, padding: 10 }}>Outra ação</Text>

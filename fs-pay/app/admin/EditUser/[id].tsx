@@ -177,26 +177,32 @@ export default function EditUser() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#118096',
   },
   dateInfo: {
     fontSize: 14,
     marginBottom: 15,
-    color: '#888',
-    textAlign: 'right',
+    color: '#000',
+    textAlign: 'center',
+    alignSelf: 'flex-end',
+    backgroundColor: '#00ced1',
+    borderColor: '#000',
+    borderWidth: 1,
+    borderRadius: 8,
+    width: '60%',
   },
   label: {
     marginBottom: 5,
     fontWeight: 'bold',
   },
   input: {
-    backgroundColor: '#f1f1f1',
+    backgroundColor: '#fff',
     padding: 10,
     marginBottom: 15,
     borderRadius: 5,
   },
   button: {
-    backgroundColor: '#f3ca4c',
+    backgroundColor: '#00ced1',
     padding: 15,
     alignItems: 'center',
     borderRadius: 5,
@@ -228,6 +234,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   roleButtonSelected: {
-    backgroundColor: '#f3ca4c',
+    backgroundColor: '#00ced1',
   },
 });

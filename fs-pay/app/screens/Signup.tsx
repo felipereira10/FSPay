@@ -19,14 +19,6 @@ import FloatingDollar from '../implements/FloatingDollar';
 export default function SignupScreen() {
   const router = useRouter();
 
-    const showToast = () => {
-      Toast.show({
-        type: 'success',
-        text1: 'Transferência realizada!',
-        text2: 'Você realizou uma transferência com sucesso 👋'
-      });
-    }
-
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -237,11 +229,6 @@ export default function SignupScreen() {
         <TouchableOpacity onPress={handleSignup} style={styles.button} disabled={loading}>
           <Text style={styles.buttonText}>{loading ? 'Cadastrando...' : 'Cadastrar'}</Text>
         </TouchableOpacity>
-
-        <Button
-                title="Show Toast"
-                onPress={showToast}
-        />
       </ScrollView>
     </KeyboardAvoidingView>
   );
