@@ -481,15 +481,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
   },
   subModalContainer: {
-    width: '100%',
+    width: '80%',
     backgroundColor: '#00ced1',
     borderRadius: 10,
     padding: 20,
-  },
-  subModalTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
   },
   optionContent: {
     flexDirection: 'row',
