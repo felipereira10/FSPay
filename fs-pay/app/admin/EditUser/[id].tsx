@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Animated,
+  Pressable,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { getUserById, updateUser } from '../../../services/api';
@@ -17,6 +19,25 @@ export default function EditUser() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const [showSuccess, setShowSuccess] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = () => {
+    Animated.spring(scale, {
+      toValue: 0.95,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scale, {
+      toValue: 1,
+      friction: 3,
+      tension: 40,
+      useNativeDriver: true,
+    }).start();
+  };
+
 
   const [form, setForm] = useState({
     fullName: '',
@@ -98,58 +119,85 @@ export default function EditUser() {
       <MaskInput
         value={form.fullName}
         onChangeText={(v) => handleChange('fullName', v)}
-        style={styles.input}
+        style={[
+          styles.input,
+          focusedField === 'fullName' && styles.inputFocused
+        ]}
+        onFocus={() => setFocusedField('fullName')}
+        onBlur={() => setFocusedField(null)}
       />
 
       <Text style={styles.label}>Email</Text>
       <MaskInput
         value={form.email}
         editable={false}
-        style={[styles.input, { backgroundColor: '#eee' }]}
+        style={[styles.input, { backgroundColor: '#999' }]}
       />
 
       <Text style={styles.label}>Telefone</Text>
       <MaskInput
         value={form.phone}
-        onChangeText={(masked: string, unmasked: string) => handleChange('phone', unmasked)}
+        onChangeText={(masked, unmasked) => handleChange('phone', unmasked)}
         mask={Masks.BRL_PHONE}
         keyboardType="numeric"
-        style={styles.input}
+        style={[
+          styles.input,
+          focusedField === 'phone' && styles.inputFocused
+        ]}
+        onFocus={() => setFocusedField('phone')}
+        onBlur={() => setFocusedField(null)}
       />
 
       <Text style={styles.label}>CPF</Text>
       <MaskInput
         value={form.cpf}
-        onChangeText={(masked: string, unmasked: string) => handleChange('cpf', unmasked)}
+        onChangeText={(masked, unmasked) => handleChange('cpf', unmasked)}
         mask={Masks.BRL_CPF}
         keyboardType="numeric"
-        style={styles.input}
+        style={[
+          styles.input,
+          focusedField === 'cpf' && styles.inputFocused
+        ]}
+        onFocus={() => setFocusedField('cpf')}
+        onBlur={() => setFocusedField(null)}
       />
 
       <Text style={styles.label}>Data de Nascimento</Text>
       <MaskInput
         value={form.birthdate}
-        onChangeText={(masked: string) => handleChange('birthdate', masked)}
+        onChangeText={(masked) => handleChange('birthdate', masked)}
         mask={Masks.DATE_DDMMYYYY}
         keyboardType="numeric"
-        style={styles.input}
-      />
+        style={[
+          styles.input,
+          focusedField === 'birthdate' && styles.inputFocused
+        ]}
+        onFocus={() => setFocusedField('birthdate')}
+        onBlur={() => setFocusedField(null)}
+      />    
+
 
       <Text style={styles.label}>Função</Text>
       <View style={styles.roleContainer}>
         {['admin', 'user', 'employee'].map((role) => (
-          <TouchableOpacity
+          <Pressable
             key={role}
             onPress={() => handleChange('role', role)}
-            style={[
-              styles.roleButton,
-              form.role === role && styles.roleButtonSelected,
-            ]}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
           >
-            <Text style={{ color: form.role === role ? '#fff' : '#000' }}>
-              {role}
-            </Text>
-          </TouchableOpacity>
+            <Animated.View
+              style={[
+                styles.roleButton,
+                form.role === role && styles.roleButtonSelected,
+                { transform: [{ scale }] },
+              ]}
+            >
+              <Text style={{ color: form.role === role ? '#fff' : '#000' }}>
+                {role}
+              </Text>
+            </Animated.View>
+          </Pressable>
         ))}
       </View>
 
@@ -192,14 +240,17 @@ const styles = StyleSheet.create({
     width: '60%',
   },
   label: {
-    marginBottom: 5,
+    color: '#fff',
+    marginBottom: 3,
     fontWeight: 'bold',
   },
   input: {
     backgroundColor: '#fff',
     padding: 10,
     marginBottom: 15,
+    borderWidth: 1,
     borderRadius: 5,
+    borderColor: '#00ced1'
   },
   button: {
     backgroundColor: '#00ced1',
@@ -227,13 +278,20 @@ const styles = StyleSheet.create({
   },
   roleButton: {
     padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    borderWidth: 3,
+    borderColor: '#00ced1',
     borderRadius: 5,
     minWidth: 80,
     alignItems: 'center',
   },
   roleButtonSelected: {
     backgroundColor: '#00ced1',
+    borderRadius: 18,
+  },
+  inputFocused: {
+    borderColor: '#00ced1',
+    borderWidth: 2,
+    borderRadius: 18,
+    backgroundColor: '#c6efef',
   },
 });

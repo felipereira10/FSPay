@@ -70,15 +70,31 @@ export default function UsersAdmin() {
     }
   };
 
+  const formatCPF = (cpf: string) => {
+    return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
+  };
+
+  const formatPhone = (phone: string) => {
+    return phone
+      .replace(/\D/g, "")
+      .replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+  };
+
+  const formatDate = (dateString: string) => {
+    const [year, month, day] = dateString.split("T")[0].split("-");
+    return `${day}/${month}/${year}`;
+  };
+
+
   const renderUser = ({ item }: { item: User }) => {
     return (
       <View style={styles.userCard}>
         <Text style={styles.userText}>Nome: {item.fullName}</Text>
         <Text style={styles.userText}>Email: {item.email}</Text>
-        <Text style={styles.userText}>CPF: {item.cpf}</Text>
-        <Text style={styles.userText}>Celular: {item.phone}</Text>
-        <Text style={styles.userText}>Nascimento: {item.birthdate?.toString()}</Text>
-        <Text style={styles.userText}>Cargo: {item.role}</Text>
+        <Text style={styles.userText}>CPF: {formatCPF(item.cpf)}</Text>
+        <Text style={styles.userText}>Celular: {formatPhone(item.phone)}</Text>
+        <Text style={styles.userText}>Nascimento: {formatDate(item.birthdate?.toString())}</Text>
+        <Text style={styles.userText}>Função: {item.role}</Text>
 
 
         {item.role !== 'admin' && !item.is_approved && (
@@ -138,24 +154,24 @@ export default function UsersAdmin() {
           onPress={() => setFilterStatus(null)}
           style={[styles.filterBtn, filterStatus === null && styles.activeFilter]}
         >
-          <Text style={{ color:'#fff' }}>Todos</Text>
+          <Text style={{ color:'#fff', fontWeight: 'bold' }}>Todos</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setFilterStatus(true)}
           style={[styles.filterBtn, filterStatus === true && styles.activeFilter]}
         >
-          <Text>Aprovados</Text>
+          <Text style={{ color:'#fff', fontWeight: 'bold' }}>Aprovados</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setFilterStatus(false)}
           style={[styles.filterBtn, filterStatus === false && styles.activeFilter]}
         >
-          <Text>Pendentes</Text>
+          <Text style={{ color:'#fff', fontWeight: 'bold' }}>Pendentes</Text>
         </TouchableOpacity>
       </View>
 
       {filteredUsers.length === 0 && filterStatus === false ? (
-        <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 16, color: '#333' }}>
+        <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 16, color: '#fff', fontWeight: 'bold' }}>
           Sem usuários para aprovar
         </Text>
       ) : (
@@ -314,17 +330,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 10,
-    color: '#00ced1'
+    color: '#00ced1',
   },
   filterBtn: {
     paddingVertical: 6,
     paddingHorizontal: 12,
-    borderWidth: 1,
+    borderWidth: 3,
     borderColor: '#00ced1',
     borderRadius: 5,
   
   },
   activeFilter: {
     backgroundColor: '#00ced1',
+    borderRadius: 18,
   },
 });
