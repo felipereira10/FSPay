@@ -14,6 +14,9 @@ import Toast from 'react-native-toast-message';
 import Modal from 'react-native-modal';
 import LottieView from 'lottie-react-native';
 import MaskInput, { Masks } from 'react-native-mask-input';
+import AnimatedScaleButton from '@/components/Buttons/AnimatedScaleButton';
+import AnimatedFadeButton from '@/components/Buttons/AnimatedFadeButton';
+
 
 export default function EditUser() {
   const { id } = useLocalSearchParams();
@@ -180,30 +183,24 @@ export default function EditUser() {
       <Text style={styles.label}>Função</Text>
       <View style={styles.roleContainer}>
         {['admin', 'user', 'employee'].map((role) => (
-          <Pressable
+          <AnimatedScaleButton
             key={role}
             onPress={() => handleChange('role', role)}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
+            style={[
+              styles.roleButton,
+              form.role === role && styles.roleButtonSelected,
+            ]}
           >
-            <Animated.View
-              style={[
-                styles.roleButton,
-                form.role === role && styles.roleButtonSelected,
-                { transform: [{ scale }] },
-              ]}
-            >
-              <Text style={{ color: form.role === role ? '#fff' : '#000' }}>
-                {role}
-              </Text>
-            </Animated.View>
-          </Pressable>
+            <Text style={{ color: form.role === role ? '#000' : '#fff', fontWeight: 'bold' }}>
+              {role}
+            </Text>
+          </AnimatedScaleButton>
         ))}
       </View>
 
-      <TouchableOpacity onPress={handleUpdate} style={styles.button}>
+      <AnimatedFadeButton onPress={handleUpdate} style={styles.button}>
         <Text style={styles.buttonText}>Salvar Alterações</Text>
-      </TouchableOpacity>
+      </AnimatedFadeButton>
 
       <Modal isVisible={showSuccess}>
         <View style={styles.modalContentSucess}>
@@ -287,6 +284,11 @@ const styles = StyleSheet.create({
   roleButtonSelected: {
     backgroundColor: '#00ced1',
     borderRadius: 18,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   inputFocused: {
     borderColor: '#00ced1',
