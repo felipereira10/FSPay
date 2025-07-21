@@ -216,7 +216,7 @@ export default function Home() {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('help')}>
+          <TouchableOpacity style={styles.optionButton} onPress={() => openSubModal('about')}>
             <View style={styles.optionContent}>
               <Ionicons name="information-circle-outline" size={20} color="#333" style={styles.optionIcon} />
               <Text style={styles.optionText}>Sobre o aplicativo</Text>
