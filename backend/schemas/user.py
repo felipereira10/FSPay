@@ -31,3 +31,16 @@ class UserUpdate(BaseModel):
     birthdate: Optional[date]
     phone: Optional[str]
     role: Optional[Literal['admin', 'user', 'employee']]
+
+class UserUpdateSchema(BaseModel):
+    fullName: str
+    cpf: str
+    birthdate: date
+    phone: str
+
+class ChangePasswordSchema(BaseModel):
+    old_password: str
+    new_password: str
+
+class EmailChangeRequestSchema(BaseModel):
+    new_email: EmailStr
