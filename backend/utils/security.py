@@ -1,6 +1,6 @@
 from passlib.hash import bcrypt
 from datetime import datetime, timedelta
-from .email import send_email  # sua lógica de envio real
+from .email import send_email  # type: ignore # sua lógica de envio real
 
 def verify_password(plain, hashed):
     return bcrypt.verify(plain, hashed)

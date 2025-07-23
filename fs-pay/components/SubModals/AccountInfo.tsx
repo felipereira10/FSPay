@@ -1,116 +1,155 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
-import axios from 'axios';
-import { useAuth } from '../context/AuthContext'; // pega o user/token
+import { View, Text, TextInput, StyleSheet, Button, Alert, ScrollView, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
+
+const isExpoGo = Constants.appOwnership === 'expo';
+
+let API_BASE_URL = '';
+
+if (isExpoGo) {
+  // ⚠️ Coloque aqui o IP local do seu computador (quando usar Expo Go)
+  // IP da rede do trampo
+  API_BASE_URL = 'http://192.168.0.177:8000';
+  // IP da rede de casa
+  // API_BASE_URL = 'http://192.168.1.70:8000';
+} else if (Platform.OS === 'android') {
+  // Android Studio emulador
+  API_BASE_URL = 'http://10.0.2.2:8000';
+} else {
+  // iOS emulador ou build física
+  API_BASE_URL = 'http://localhost:8000';
+}
 
 export default function AccountInfo() {
-  const { authData } = useAuth();
-  const [userInfo, setUserInfo] = useState({
+  const [formData, setFormData] = useState({
     fullName: '',
     cpf: '',
     phone: '',
     birthdate: '',
   });
 
-  const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    if (authData?.user) {
-      const { fullName, cpf, phone, birthdate } = authData.user;
-      setUserInfo({ fullName, cpf, phone, birthdate });
-    }
-  }, [authData]);
+    const loadUserData = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      const authToken = await AsyncStorage.getItem('userToken');
+      if (userData && authToken) {
+        const parsed = JSON.parse(userData);
+        setUserId(parsed.id);
+        setToken(authToken);
+        setFormData({
+          fullName: parsed.fullName,
+          cpf: parsed.cpf,
+          phone: parsed.phone,
+          birthdate: parsed.birthdate?.slice(0, 10) || '',
+        });
+      }
+    };
+    loadUserData();
+  }, []);
+
+  const handleChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleSave = async () => {
-    setLoading(true);
+    if (!userId || !token) return;
+
+    if (!formData.fullName || !formData.cpf || !formData.phone || !formData.birthdate) {
+      Alert.alert('Erro', 'Preencha todos os campos');
+      return;
+    }
+
     try {
-      const res = await axios.put(
-        `http://SEU_BACKEND/users/${authData.user.id}`,
-        userInfo,
-        {
-          headers: {
-            Authorization: `Bearer ${authData.token}`,
-          },
-        }
-      );
-      Alert.alert('Sucesso', 'Dados atualizados com sucesso!');
+      const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Atualiza localmente
+        await AsyncStorage.setItem('userData', JSON.stringify({ ...formData, id: userId }));
+        Alert.alert('Sucesso', 'Dados atualizados com sucesso');
+      } else {
+        console.log(result);
+        Alert.alert('Erro', result?.detail || 'Falha ao atualizar os dados');
+      }
     } catch (error) {
       console.error(error);
-      Alert.alert('Erro', 'Não foi possível atualizar os dados.');
-    } finally {
-      setLoading(false);
+      Alert.alert('Erro', 'Erro de conexão');
     }
   };
 
-  const openPasswordModal = () => {
-    // você pode usar um Modal ou navegar para outra tela
-    Alert.alert('Redefinir Senha', 'Funcionalidade ainda não implementada.');
+  const goToChangePassword = () => {
+    // Navegar para modal de alteração de senha
   };
 
-  const openEmailModal = () => {
-    // você pode usar um Modal ou navegar para outra tela
-    Alert.alert('Alterar Email', 'Funcionalidade ainda não implementada.');
+  const goToChangeEmail = () => {
+    // Navegar para modal de alteração de e-mail
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Editar Perfil</Text>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Editar Informações da Conta</Text>
 
       <TextInput
         style={styles.input}
         placeholder="Nome completo"
-        value={userInfo.fullName}
-        onChangeText={(text) => setUserInfo({ ...userInfo, fullName: text })}
+        value={formData.fullName}
+        onChangeText={(text) => handleChange('fullName', text)}
       />
-
       <TextInput
         style={styles.input}
         placeholder="CPF"
-        keyboardType="numeric"
-        value={userInfo.cpf}
-        onChangeText={(text) => setUserInfo({ ...userInfo, cpf: text })}
+        value={formData.cpf}
+        onChangeText={(text) => handleChange('cpf', text)}
       />
-
       <TextInput
         style={styles.input}
         placeholder="Celular"
-        keyboardType="phone-pad"
-        value={userInfo.phone}
-        onChangeText={(text) => setUserInfo({ ...userInfo, phone: text })}
+        value={formData.phone}
+        onChangeText={(text) => handleChange('phone', text)}
       />
-
       <TextInput
         style={styles.input}
-        placeholder="Data de nascimento (YYYY-MM-DD)"
-        value={userInfo.birthdate}
-        onChangeText={(text) => setUserInfo({ ...userInfo, birthdate: text })}
+        placeholder="Data de nascimento"
+        value={formData.birthdate}
+        onChangeText={(text) => handleChange('birthdate', text)}
       />
 
-      <Button title={loading ? 'Salvando...' : 'Salvar Alterações'} onPress={handleSave} />
+      <Button title="Salvar Alterações" onPress={handleSave} />
 
-      <View style={{ height: 30 }} />
-
-      <Button title="Alterar Senha" color="#FF9800" onPress={openPasswordModal} />
-      <View style={{ height: 10 }} />
-      <Button title="Alterar Email" color="#2196F3" onPress={openEmailModal} />
-    </View>
+      <View style={{ marginVertical: 20 }}>
+        <Button title="Redefinir Senha" onPress={goToChangePassword} />
+        <Button title="Alterar Email" onPress={goToChangeEmail} />
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    backgroundColor: '#FFF',
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 18,
     marginBottom: 20,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#999',
-    borderRadius: 8,
+    backgroundColor: '#f1f1f1',
+    marginBottom: 12,
     padding: 10,
-    marginBottom: 10,
+    borderRadius: 6,
   },
 });

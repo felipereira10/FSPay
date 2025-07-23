@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from ..schemas import UserUpdateSchema, ChangePasswordSchema, EmailChangeRequestSchema
-from ..models import User, EmailChangeRequest
-from ..dependencies import get_db, get_current_user
-from ..utils.security import verify_password, hash_password, send_email_verification, save_token, token_expired
+from models.email_change import EmailChangeRequest
+from schemas.user import UserUpdateSchema, ChangePasswordSchema, EmailChangeRequestSchema
+from models.user import User
+from utils.dependencies import get_db, get_current_user
+from utils.security import verify_password, hash_password, send_email_verification, save_token, token_expired
 import secrets
 
 router = APIRouter()

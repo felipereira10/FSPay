@@ -23,3 +23,10 @@ Base = declarative_base()
 def create_tables():
     from models.user import User
     Base.metadata.create_all(bind=engine)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
