@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, Alert, ScrollView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Button,
+  Alert,
+  ScrollView,
+  Platform,
+  ActivityIndicator,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
+import LottieView from 'lottie-react-native';
 
 const isExpoGo = Constants.appOwnership === 'expo';
 
@@ -14,10 +25,8 @@ if (isExpoGo) {
   // IP da rede de casa
   // API_BASE_URL = 'http://192.168.1.70:8000';
 } else if (Platform.OS === 'android') {
-  // Android Studio emulador
   API_BASE_URL = 'http://10.0.2.2:8000';
 } else {
-  // iOS emulador ou build física
   API_BASE_URL = 'http://localhost:8000';
 }
 
@@ -31,40 +40,58 @@ export default function AccountInfo() {
 
   const [userId, setUserId] = useState<number | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const loadUserData = async () => {
-      const userData = await AsyncStorage.getItem('userData');
-      const authToken = await AsyncStorage.getItem('userToken');
-      if (userData && authToken) {
+    const fetchData = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('userData');
+        const authToken = await AsyncStorage.getItem('userToken');
+        if (!userData || !authToken) return;
+
         const parsed = JSON.parse(userData);
         setUserId(parsed.id);
         setToken(authToken);
-        setFormData({
-          fullName: parsed.fullName,
-          cpf: parsed.cpf,
-          phone: parsed.phone,
-          birthdate: parsed.birthdate?.slice(0, 10) || '',
+
+        const res = await fetch(`${API_BASE_URL}/users/${parsed.id}`, {
+          headers: { Authorization: `Bearer ${authToken}` },
         });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setFormData({
+            fullName: data.fullName,
+            cpf: data.cpf,
+            phone: data.phone,
+            birthdate: data.birthdate?.slice(0, 10) || '',
+          });
+        } else {
+          console.log('Erro ao buscar dados do usuário:', data);
+        }
+      } catch (err) {
+        console.error('Erro de rede', err);
+      } finally {
+        setLoading(false);
       }
     };
-    loadUserData();
+
+    fetchData();
   }, []);
 
   const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleSave = async () => {
     if (!userId || !token) return;
-
-    if (!formData.fullName || !formData.cpf || !formData.phone || !formData.birthdate) {
-      Alert.alert('Erro', 'Preencha todos os campos');
-      return;
-    }
-
+    setSaving(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      const res = await fetch(`${API_BASE_URL}/users/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -73,19 +100,18 @@ export default function AccountInfo() {
         body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
+      const data = await res.json();
 
-      if (response.ok) {
-        // Atualiza localmente
-        await AsyncStorage.setItem('userData', JSON.stringify({ ...formData, id: userId }));
-        Alert.alert('Sucesso', 'Dados atualizados com sucesso');
+      if (res.ok) {
+        Alert.alert('Sucesso', 'Informações atualizadas com sucesso!');
       } else {
-        console.log(result);
-        Alert.alert('Erro', result?.detail || 'Falha ao atualizar os dados');
+        Alert.alert('Erro', data?.message || 'Falha ao atualizar dados.');
       }
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Erro', 'Erro de conexão');
+    } catch (err) {
+      console.error(err);
+      Alert.alert('Erro', 'Algo deu errado na requisição.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -96,6 +122,19 @@ export default function AccountInfo() {
   const goToChangeEmail = () => {
     // Navegar para modal de alteração de e-mail
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <LottieView
+          source={require('../../assets/loading-fingers.json')}
+          autoPlay
+          loop
+          style={{ width: 150, height: 150 }}
+        />
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -126,7 +165,11 @@ export default function AccountInfo() {
         onChangeText={(text) => handleChange('birthdate', text)}
       />
 
-      <Button title="Salvar Alterações" onPress={handleSave} />
+      <Button
+        title={saving ? 'Salvando...' : 'Salvar Alterações'}
+        onPress={handleSave}
+        disabled={saving}
+      />
 
       <View style={{ marginVertical: 20 }}>
         <Button title="Redefinir Senha" onPress={goToChangePassword} />
@@ -151,5 +194,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     padding: 10,
     borderRadius: 6,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
   },
 });

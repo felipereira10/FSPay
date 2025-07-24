@@ -30,11 +30,12 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
 @router.post("/login")
 def login(data: LoginData, db: Session = Depends(get_db)):
     user = authenticate_user(db, data.email, data.password)
-    if not user.is_approved:
-        raise HTTPException(status_code=403, detail="Usuário ainda não aprovado pelo admin")
 
     if not user:
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
+
+    if not user.is_approved:
+        raise HTTPException(status_code=403, detail="Usuário ainda não aprovado pelo admin")
 
     token = create_access_token({"sub": user.email}, ACCESS_TOKEN_EXPIRE_MINUTES)
 

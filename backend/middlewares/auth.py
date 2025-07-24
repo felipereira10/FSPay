@@ -18,7 +18,7 @@ def get_db():
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: SessionLocal = Depends(get_db)
+    db: SessionLocal = Depends(get_db) # type: ignore
 ):
     token = credentials.credentials  # pega o token Bearer puro
     try:
