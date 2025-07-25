@@ -10,4 +10,3 @@ cryptography
 bcrypt<4.0.0
 passlib>=1.7.4,<1.8
 pydantic[email]
-

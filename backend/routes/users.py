@@ -140,49 +140,49 @@ def approve_user(user_id: int, db: Session = Depends(get_db), current_user: User
     return user
 
 # Rotas para troca de e-mail e senha com verificação (a implementar)
-@router.post("/request-email-change")
-def request_email_change():
-    pass
+# @router.post("/request-email-change")
+# def request_email_change():
+#     pass
 
-@router.post("/confirm-email-change")
-def confirm_email_change():
-    pass
+# @router.post("/confirm-email-change")
+# def confirm_email_change():
+#     pass
 
-# Enviar código de verificação
-@router.post("/{user_id}/request-email-change")
-def request_email_change(user_id: int, new_email: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if not is_admin(current_user) and current_user.id != user_id:
-        raise HTTPException(status_code=403, detail="Você não pode solicitar alteração desse usuário")
+# # Enviar código de verificação
+# @router.post("/{user_id}/request-email-change")
+# def request_email_change(user_id: int, new_email: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+#     if not is_admin(current_user) and current_user.id != user_id:
+#         raise HTTPException(status_code=403, detail="Você não pode solicitar alteração desse usuário")
     
-    code = str(uuid.uuid4())[:6]
-    verification_codes[user_id] = {
-        "code": code,
-        "new_email": new_email,
-        "expires_at": datetime.utcnow() + timedelta(minutes=30)
-    }
-    # Simulando envio por print (substituir por e-mail ou SMS real)
-    print(f"Código para {new_email}: {code}")
-    return {"detail": "Código enviado para o e-mail informado"}
+#     code = str(uuid.uuid4())[:6]
+#     verification_codes[user_id] = {
+#         "code": code,
+#         "new_email": new_email,
+#         "expires_at": datetime.utcnow() + timedelta(minutes=30)
+#     }
+#     # Simulando envio por print (substituir por e-mail ou SMS real)
+#     print(f"Código para {new_email}: {code}")
+#     return {"detail": "Código enviado para o e-mail informado"}
 
-@router.post("/{user_id}/confirm-email-change")
-def confirm_email_change(user_id: int, code: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    if user_id not in verification_codes:
-        raise HTTPException(status_code=400, detail="Nenhum código pendente para esse usuário")
-    data = verification_codes[user_id]
+# @router.post("/{user_id}/confirm-email-change")
+# def confirm_email_change(user_id: int, code: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+#     if user_id not in verification_codes:
+#         raise HTTPException(status_code=400, detail="Nenhum código pendente para esse usuário")
+#     data = verification_codes[user_id]
 
-    if datetime.utcnow() > data["expires_at"]:
-        del verification_codes[user_id]
-        raise HTTPException(status_code=400, detail="Código expirado")
+#     if datetime.utcnow() > data["expires_at"]:
+#         del verification_codes[user_id]
+#         raise HTTPException(status_code=400, detail="Código expirado")
 
-    if code != data["code"]:
-        raise HTTPException(status_code=400, detail="Código inválido")
+#     if code != data["code"]:
+#         raise HTTPException(status_code=400, detail="Código inválido")
 
-    user = db.query(User).filter(User.id == user_id).first()
-    if user:
-        user.email = data["new_email"]
-        db.commit()
-        db.refresh(user)
-        del verification_codes[user_id]
-        return user
-    else:
-        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+#     user = db.query(User).filter(User.id == user_id).first()
+#     if user:
+#         user.email = data["new_email"]
+#         db.commit()
+#         db.refresh(user)
+#         del verification_codes[user_id]
+#         return user
+#     else:
+#         raise HTTPException(status_code=404, detail="Usuário não encontrado")

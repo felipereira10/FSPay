@@ -7,7 +7,7 @@ from schemas.user import EmailChangeRequestSchema
 import uuid
 from datetime import datetime, timedelta
 
-router = APIRouter(prefix="/email-change", tags=["Email Change"])
+router = APIRouter(prefix="/email-change")
 
 @router.post("/request")
 def request_email_change(
@@ -33,10 +33,10 @@ def request_email_change(
 def confirm_email_change(token: str, db: Session = Depends(get_db)):
     req = db.query(EmailChangeRequest).filter_by(token=token).first()
     if not req or req.expires_at < datetime.utcnow():
-        raise HTTPException(status_code=400, detail="Invalid or expired token")
+        raise HTTPException(status_code=400, detail="Token inválido ou expirado")
 
     user = db.query(User).filter_by(id=req.user_id).first()
     user.email = req.new_email
     db.delete(req)
     db.commit()
-    return {"msg": "Email updated successfully"}
+    return {"msg": "Email atualizado com sucesso"}
