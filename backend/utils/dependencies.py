@@ -1,7 +1,7 @@
 from fastapi import Request, HTTPException, Depends
 from utils.jwt import decode_access_token
 from models.user import User
-from utils.dependencies import get_db  # cuidado com import circular!
+from utils.db import get_db
 from sqlalchemy.orm import Session
 
 def get_token_from_header(request: Request):
