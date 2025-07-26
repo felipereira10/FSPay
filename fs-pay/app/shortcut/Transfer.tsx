@@ -9,7 +9,7 @@ export default function Transfer() {
     Toast.show({
       type: 'success',
       text1: 'Transferência realizada!',
-      text2: 'Você realizou uma transferência com sucesso 👋'
+      text2: 'Você realizou uma transferência com sucesso'
     });
   }
 
