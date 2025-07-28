@@ -315,8 +315,19 @@ export default function Home() {
                   return null;
               }
             })()}
-            <TouchableOpacity onPress={closeSubModal} style={{ marginTop: 20 }}>
-              <Text style={{ color: 'blue' }}>Voltar</Text>
+            <TouchableOpacity 
+              onPress={closeSubModal} 
+              style={{ 
+                marginTop: 20,
+                backgroundColor: 'red', 
+                borderColor: '#fff', 
+                borderWidth: 1, 
+                borderRadius: 8, 
+                alignSelf: 'flex-start',
+                width: 70,
+              }}
+            >
+              <Text style={{ color: 'white', textAlign: 'center', }}>Voltar</Text>
             </TouchableOpacity>
           </View>
         </View>

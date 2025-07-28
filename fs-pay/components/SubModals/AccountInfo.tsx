@@ -9,6 +9,7 @@ import {
   ScrollView,
   Platform,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
@@ -164,16 +165,33 @@ export default function AccountInfo() {
         value={formData.birthdate}
         onChangeText={(text) => handleChange('birthdate', text)}
       />
-
-      <Button
-        title={saving ? 'Salvando...' : 'Salvar Alterações'}
+      <TouchableOpacity
+        style={[styles.buttonSave, saving && styles.disabledButton]}
         onPress={handleSave}
         disabled={saving}
-      />
+      >
+        <Text style={styles.buttonSaveText}>
+          {saving ? 'Salvando...' : 'Salvar Alterações'}
+        </Text>
+      </TouchableOpacity>
 
-      <View style={{ marginVertical: 20 }}>
-        <Button title="Redefinir Senha" onPress={goToChangePassword} />
-        <Button title="Alterar Email" onPress={goToChangeEmail} />
+      <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 2, marginVertical: 12, marginBottom: 5 }}>
+        <TouchableOpacity 
+          onPress={goToChangePassword} 
+          style={styles.buttonPassword}
+        >
+          <Text style={{ textAlign: 'center', color: '#fff', fontWeight: 'bold' }}>
+            Redefinir Senha
+          </Text>
+        </TouchableOpacity>
+                <TouchableOpacity 
+          onPress={goToChangeEmail} 
+          style={styles.buttonEmail}
+        >
+          <Text style={{ textAlign: 'center', color: '#fff', fontWeight: 'bold' }} >
+            Alterar Email
+          </Text> 
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -182,12 +200,13 @@ export default function AccountInfo() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#FFF',
+    backgroundColor: '#00ced1',
   },
   title: {
     fontWeight: 'bold',
     fontSize: 18,
     marginBottom: 20,
+    textAlign: 'center'
   },
   input: {
     backgroundColor: '#f1f1f1',
@@ -200,5 +219,40 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  buttonPassword: {
+    backgroundColor: '#482060',
+    textAlign: 'center',
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    width: '50%',
+    borderWidth: 1,
+  }, 
+  buttonEmail: {
+    backgroundColor: '#a856ebff',
+    textAlign: 'center',
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    width: '50%',
+    borderWidth: 1,
+    borderColor: '#fa7f72'
+  },
+  buttonSave: {
+    backgroundColor: '#008000',
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: '#ff7fff',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  disabledButton: {
+    backgroundColor: '#adb5bd',
+  },
+  buttonSaveText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
