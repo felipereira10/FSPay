@@ -66,7 +66,7 @@ export default function LoginScreen() {
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
       >
-        <Image source={require('../../assets/images/FSPayIdea.png')} style={styles.logo} />
+        <Image source={require('../../assets/images/FSPayLogin.png')} style={styles.logo} />
 
         <TextInput
           placeholder="Email"
@@ -125,8 +125,9 @@ const styles = StyleSheet.create({
   logo: {
     width: 350,
     height: 350,
-    marginBottom: 10,
-  },
+    marginBottom: 5,
+    marginTop: -100,
+   },
   input: {
     width: '80%',
     height: 40,
