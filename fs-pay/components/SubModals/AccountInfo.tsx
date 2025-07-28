@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   StyleSheet,
-  Alert,
   ScrollView,
-  ActivityIndicator,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LottieView from 'lottie-react-native';
 import { getUserByIdSelf, updateUserSelf } from '../../services/api';
+import LottieView from 'lottie-react-native';
+import MaskInput, { Masks } from 'react-native-mask-input';
+import Modal from 'react-native-modal';
 
 export default function AccountInfo() {
   const [formData, setFormData] = useState({
@@ -21,6 +21,8 @@ export default function AccountInfo() {
     birthdate: '',
   });
 
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [token, setToken] = useState('');
@@ -56,7 +58,16 @@ export default function AccountInfo() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  console.log('[AccountInfo] Token:', token);
+  const formatDateBR = (iso: string) => {
+    if (!iso) return '';
+    const [year, month, day] = iso.split('T')[0].split('-');
+    return `${day}/${month}/${year}`;
+  };
+
+  const parseDateToISO = (brDate: string) => {
+    const [day, month, year] = brDate.split('/');
+    return `${year}-${month}-${day}`;
+  };
 
   const handleSave = async () => {
     if (!userId || !token) return;
@@ -98,29 +109,58 @@ export default function AccountInfo() {
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Editar Informações da Conta</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Nome completo"
+      <Text style={styles.label}>Nome completo</Text>
+      <MaskInput
         value={formData.fullName}
         onChangeText={(text) => handleChange('fullName', text)}
+        style={[
+          styles.input,
+          focusedField === 'fullName' && styles.inputFocused,
+        ]}
+        onFocus={() => setFocusedField('fullName')}
+        onBlur={() => setFocusedField(null)}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="CPF"
+
+      <Text style={styles.label}>CPF</Text>
+      <MaskInput
         value={formData.cpf}
-        onChangeText={(text) => handleChange('cpf', text)}
+        onChangeText={(masked, unmasked) => handleChange('cpf', unmasked)}
+        mask={Masks.BRL_CPF}
+        keyboardType="numeric"
+        style={[
+          styles.input,
+          focusedField === 'cpf' && styles.inputFocused,
+        ]}
+        onFocus={() => setFocusedField('cpf')}
+        onBlur={() => setFocusedField(null)}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Celular"
+
+      <Text style={styles.label}>Celular</Text>
+      <MaskInput
         value={formData.phone}
-        onChangeText={(text) => handleChange('phone', text)}
+        onChangeText={(masked, unmasked) => handleChange('phone', unmasked)}
+        mask={Masks.BRL_PHONE}
+        keyboardType="numeric"
+        style={[
+          styles.input,
+          focusedField === 'phone' && styles.inputFocused,
+        ]}
+        onFocus={() => setFocusedField('phone')}
+        onBlur={() => setFocusedField(null)}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Data de nascimento"
+
+      <Text style={styles.label}>Data de nascimento</Text>
+      <MaskInput
         value={formData.birthdate}
-        onChangeText={(text) => handleChange('birthdate', text)}
+        onChangeText={(masked) => handleChange('birthdate', masked)}
+        mask={Masks.DATE_DDMMYYYY}
+        keyboardType="numeric"
+        style={[
+          styles.input,
+          focusedField === 'birthdate' && styles.inputFocused,
+        ]}
+        onFocus={() => setFocusedField('birthdate')}
+        onBlur={() => setFocusedField(null)}
       />
 
       <TouchableOpacity
@@ -156,11 +196,22 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
+  label: {
+    color: '#fff',
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
   input: {
     backgroundColor: '#f1f1f1',
     marginBottom: 12,
     padding: 10,
     borderRadius: 6,
+  },
+  inputFocused: {
+    borderColor: '#00ced1',
+    borderWidth: 2,
+    borderRadius: 18,
+    backgroundColor: '#c6efef',
   },
   loadingContainer: {
     flex: 1,
@@ -183,6 +234,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  modalContentSucess: {
+    backgroundColor: '#a2eba2e3',
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 10,
+    width: '70%',
+    height: '40%',
+    alignSelf: 'center',
   },
   buttonRow: {
     flexDirection: 'row',
