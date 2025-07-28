@@ -9,22 +9,27 @@ import secrets
 
 router = APIRouter()
 
-@router.put("/users/{user_id}")
-def update_user(user_id: int, data: UserUpdateSchema, db: Session = Depends(get_db), user=Depends(get_current_user)):
+@router.put("/{user_id}")
+def update_user(
+    user_id: int,
+    data: UserUpdateSchema,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
     if user.id != user_id:
         raise HTTPException(status_code=403, detail="Acesso negado")
 
-    user_db = db.query(User).filter(User.id == user_id).first()
-    if not user_db:
-        raise HTTPException(status_code=404)
+    user.fullName = data.fullName
+    user.cpf = data.cpf
+    user.birthdate = data.birthdate
+    user.phone = data.phone
 
-    user_db.fullName = data.fullName
-    user_db.cpf = data.cpf
-    user_db.birthdate = data.birthdate
-    user_db.phone = data.phone
     db.commit()
     return {"status": "updated"}
 
+@router.get("/me")
+async def get_profile(current_user: User = Depends(get_current_user)):
+    return current_user
 
 @router.post("/users/change-password")
 def change_password(payload: ChangePasswordSchema, db: Session = Depends(get_db), user=Depends(get_current_user)):
@@ -34,6 +39,11 @@ def change_password(payload: ChangePasswordSchema, db: Session = Depends(get_db)
     user.password_hash = hash_password(payload.new_password)
     db.commit()
     return {"msg": "Senha alterada com sucesso"}
+
+@router.get("/teste-token")
+def teste_token(user=Depends(get_current_user)):
+    return {"msg": f"Usuário autenticado: {user.email}"}
+
 
 
 # @router.post("/users/request-email-change")

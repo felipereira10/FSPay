@@ -156,6 +156,32 @@ export const getUserById = async (userId: number) => {
   return res.data;
 };
 
+export const getUserByIdSelf = async () => {
+  const token = await AsyncStorage.getItem('userToken');
+  const res = await api.get('/profile/me', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
+
+export const updateUserSelf = async (userId: number, data: any) => {
+  const token = await AsyncStorage.getItem('userToken');
+  const res = await api.put(`/profile/${userId}`, data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};
+
+
+// export const updateUserSelf = async (userId: number, data: any) => {
+//   const token = await AsyncStorage.getItem('userToken');
+//   const res = await axios.put(`http://192.168.0.53:8000/users/${userId}`, data, {
+//     headers: { Authorization: `Bearer ${token}` },
+//   });
+//   return res.data;
+// };
+
+
 // Update user
 // Usado na tela de edição de usuário
 export const updateUser = async (userId: number, updatedData: any) => {

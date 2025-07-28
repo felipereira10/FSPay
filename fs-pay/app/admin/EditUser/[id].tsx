@@ -111,7 +111,7 @@ export default function EditUser() {
   const displayDate = form.updatedAt || form.createdAt;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 30 }}>
       {displayDate && (
         <Text style={styles.dateInfo}>
           Última edição: {formatDateBR(displayDate)}
@@ -221,6 +221,7 @@ export default function EditUser() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
     backgroundColor: '#118096',
   },
