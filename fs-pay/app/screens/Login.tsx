@@ -68,6 +68,8 @@ export default function LoginScreen() {
       >
         <Image source={require('../../assets/images/FSPayLogin.png')} style={styles.logo} />
 
+        {error && <Text style={{ color: '#fff', backgroundColor: 'red', borderRadius: 8, padding: 2, fontWeight: 'bold' }}>{error}</Text>}
+        
         <TextInput
           placeholder="Email"
           value={email}
@@ -85,7 +87,7 @@ export default function LoginScreen() {
             secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
-            style={[styles.input, { flex: 1, marginVertical: 0 }]}
+            style={[styles.inputEmail, focusedField === 'password' && styles.inputFocusedEmail]}
             onFocus={() => setFocusedField('password')}
             onBlur={() => setFocusedField(null)}
           />
@@ -98,7 +100,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        {error && <Text style={{ color: 'red', backgroundColor: '#fff' }}>{error}</Text>}
+        
 
         <TouchableOpacity onPress={handleLogin} style={styles.buttonLogin}>
           <Text>Entrar</Text>
@@ -129,20 +131,38 @@ const styles = StyleSheet.create({
     marginTop: -100,
    },
   input: {
-    width: '80%',
-    height: 40,
+    width: '70%',
+    height: 45,
     backgroundColor: '#fff',
     marginVertical: 10,
     paddingHorizontal: 10,
     borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#ddd',
+    // borderWidth: 1,
+    // borderColor: '#ddd',
+  },
+  inputEmail: {
+    width: '70%',
+    height: 45,
+    backgroundColor: '#fff',
+    marginVertical: 1,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    // borderWidth: 1,
+    // borderColor: '#ddd',
   },
   inputFocused: {
     borderColor: '#00ced1',
-    borderWidth: 2,
+    borderWidth: 3,
     backgroundColor: '#c6efef',
-    borderRadius: 18
+    borderRadius: 18,
+    paddingHorizontal: 18,
+  },
+  inputFocusedEmail: {
+    borderColor: '#00ced1',
+    backgroundColor: '#c6efef',
+    borderRadius: 18,
+    paddingHorizontal: 12,
+    // borderWidth: 1
   },
   passwordContainer: {
     flexDirection: 'row',
@@ -150,13 +170,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 5,
     marginVertical: 10,
-    width: '80%',
+    width: '70%',
     paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: '#ddd',
   },
   toggleButton: {
-    marginLeft: 10,
+    marginLeft: 15,
   },
   buttonLogin: {
     backgroundColor: '#00ced1',
