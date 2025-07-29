@@ -12,6 +12,7 @@ import { getUserByIdSelf, updateUserSelf } from '../../services/api';
 import LottieView from 'lottie-react-native';
 import MaskInput, { Masks } from 'react-native-mask-input';
 import Modal from 'react-native-modal';
+import { router } from 'expo-router';
 
 export default function AccountInfo() {
   const [formData, setFormData] = useState({
@@ -42,7 +43,7 @@ export default function AccountInfo() {
           fullName: data.fullName,
           cpf: data.cpf,
           phone: data.phone,
-          birthdate: data.birthdate?.slice(0, 10) || '',
+          birthdate: data.birthdate ? formatDateToBR(data.birthdate) : '',
         });
       } catch (err) {
         console.error('Erro ao buscar dados:', err);
@@ -58,23 +59,51 @@ export default function AccountInfo() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const formatDateBR = (iso: string) => {
-    if (!iso) return '';
-    const [year, month, day] = iso.split('T')[0].split('-');
+  const formatDateToBR = (dateStr: string) => {
+    const [year, month, day] = dateStr.split('-');
     return `${day}/${month}/${year}`;
   };
 
+  const isValidDate = (dateStr: string) => {
+    const [day, month, year] = dateStr.split('/').map(Number);
+    const date = new Date(year, month - 1, day);
+    return (
+      date.getDate() === day &&
+      date.getMonth() === month - 1 &&
+      date.getFullYear() === year
+    );
+  };
+
+
   const parseDateToISO = (brDate: string) => {
     const [day, month, year] = brDate.split('/');
-    return `${year}-${month}-${day}`;
+    if (!day || !month || !year) return '';
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   };
 
   const handleSave = async () => {
     if (!userId || !token) return;
     setSaving(true);
+
     try {
-      await updateUserSelf(userId, formData);
-      Alert.alert('Sucesso', 'Informações atualizadas com sucesso!');
+      const isoDate = parseDateToISO(formData.birthdate);
+
+      if (!isoDate || isoDate.length !== 10) {
+        Alert.alert('Erro', 'Data de nascimento inválida');
+        return;
+      }
+
+      const payload = {
+        ...formData,
+        birthdate: isoDate,
+      };
+
+      await updateUserSelf(userId, payload);
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        router.back();
+      }, 2000);
     } catch (err) {
       console.error(err);
       Alert.alert('Erro', 'Algo deu errado na requisição.');
@@ -82,6 +111,8 @@ export default function AccountInfo() {
       setSaving(false);
     }
   };
+
+
 
 
   const goToChangePassword = () => {
@@ -172,6 +203,20 @@ export default function AccountInfo() {
           {saving ? 'Salvando...' : 'Salvar Alterações'}
         </Text>
       </TouchableOpacity>
+
+      <Modal isVisible={showSuccess}>
+        <View style={styles.modalContentSucess}>
+          <LottieView
+            source={require('../../assets/check-success.json')}
+            autoPlay
+            loop={false}
+            style={{ width: 200, height: 200 }}
+          />
+          <Text style={{ color: 'green', fontSize: 18, marginTop: 10, fontWeight: 'bold' }}>
+            Alterado com sucesso!
+          </Text>
+        </View>
+      </Modal>
 
       <View style={styles.buttonRow}>
         <TouchableOpacity onPress={goToChangePassword} style={styles.buttonSecondary}>
