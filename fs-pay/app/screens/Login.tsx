@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     height: 45,
     backgroundColor: '#fff',
     marginVertical: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     borderRadius: 5,
     // borderWidth: 1,
     // borderColor: '#ddd',
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
   },
   toggleButton: {
-    marginLeft: 15,
+    marginLeft: 45,
   },
   buttonLogin: {
     backgroundColor: '#00ced1',
@@ -190,10 +190,12 @@ const styles = StyleSheet.create({
   signupLink: {
     marginTop: 20,
     color: '#fff',
-    textDecorationLine: 'underline',
+    // textDecorationLine: 'underline',
   },
   signupLinkBold: {
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
+    textDecorationLine: 'underline',
   },
 });
