@@ -26,32 +26,32 @@ export default function Transfer() {
       case 'pix':
         return (
           <View style={styles.cardGrid}>
-            {renderCard(<MaterialIcons name="content-copy" size={28} color="#014141" />, 'Pix Copia e Cola')}
-            {renderCard(<Ionicons name="qr-code-outline" size={28} color="#014141" />, 'Ler QR Code')}
-            {renderCard(<MaterialIcons name="vpn-key" size={28} color="#014141" />, 'Chave Pix')}
-            {renderCard(<MaterialIcons name="schedule" size={28} color="#014141" />, 'Agendar Pix')}
-            {renderCard(<MaterialCommunityIcons name="qrcode-plus" size={28} color="#014141" />, 'Cobrar com Pix')}
-            {renderCard(<MaterialIcons name="download" size={28} color="#014141" />, 'Depositar com Pix')}
+            {renderCard(<MaterialIcons name="content-copy" size={28} color="#000" />, 'Pix Copia e Cola')}
+            {renderCard(<Ionicons name="qr-code-outline" size={28} color="#000" />, 'Ler QR Code')}
+            {renderCard(<MaterialIcons name="vpn-key" size={28} color="#000" />, 'Chave Pix')}
+            {renderCard(<MaterialIcons name="schedule" size={28} color="#000" />, 'Agendar Pix')}
+            {renderCard(<MaterialCommunityIcons name="qrcode-plus" size={28} color="#000" />, 'Cobrar com Pix')}
+            {renderCard(<MaterialIcons name="download" size={28} color="#000" />, 'Depositar com Pix')}
           </View>
         );
       case 'conv':
         return (
           <View style={styles.cardGrid}>
-            {renderCard(<MaterialIcons name="account-balance" size={28} color="#014141" />, 'Transf. Bancária')}
-            {renderCard(<MaterialIcons name="schedule-send" size={28} color="#014141" />, 'Agendar Transf.')}
+            {renderCard(<MaterialIcons name="account-balance" size={28} color="#000" />, 'Transf. Bancária')}
+            {renderCard(<MaterialIcons name="schedule-send" size={28} color="#000" />, 'Agendar Transf.')}
           </View>
         );
       case 'boleto':
         return (
           <View style={styles.cardGrid}>
-            {renderCard(<MaterialCommunityIcons name="barcode-scan" size={28} color="#014141" />, 'Ler Código')}
-            {renderCard(<FontAwesome5 name="money-check-alt" size={24} color="#014141" />, 'Digitar Código')}
+            {renderCard(<MaterialCommunityIcons name="barcode-scan" size={28} color="#000" />, 'Ler Código')}
+            {renderCard(<FontAwesome5 name="money-check-alt" size={24} color="#000" />, 'Digitar Código')}
           </View>
         );
       case 'history':
         return (
           <View style={styles.cardGrid}>
-            {renderCard(<Ionicons name="document-text-outline" size={28} color="#014141" />, 'Histórico de Transfs.')}
+            {renderCard(<Ionicons name="document-text-outline" size={28} color="#000" />, 'Histórico de Transfs.')}
           </View>
         );
     }
@@ -63,7 +63,7 @@ export default function Transfer() {
 
       <View style={styles.tabs}>
         <Tab label="Pix" isActive={activeTab === 'pix'} onPress={() => setActiveTab('pix')} />
-        <Tab label="Convencional" isActive={activeTab === 'conv'} onPress={() => setActiveTab('conv')} />
+        <Tab label="Transferência" isActive={activeTab === 'conv'} onPress={() => setActiveTab('conv')} />
         <Tab label="Boleto" isActive={activeTab === 'boleto'} onPress={() => setActiveTab('boleto')} />
         <Tab label="Histórico" isActive={activeTab === 'history'} onPress={() => setActiveTab('history')} />
       </View>
@@ -81,7 +81,7 @@ function Tab({ label, isActive, onPress }: { label: string; isActive: boolean; o
       onPress={onPress}
       style={[styles.tab, isActive && styles.activeTab]}
     >
-      <Text style={[styles.tabText, isActive && { color: '#fff' }]}>{label}</Text>
+      <Text style={[styles.tabText, isActive && { color: '#c6efef' }]}>{label}</Text>
     </TouchableOpacity>
   );
 }
@@ -89,7 +89,7 @@ function Tab({ label, isActive, onPress }: { label: string; isActive: boolean; o
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#00ced1',
+    backgroundColor: '#118096',
     paddingTop: 60,
     paddingHorizontal: 16,
   },
@@ -97,29 +97,32 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 20,
+    marginBottom: 22,
     textAlign: 'center',
+    paddingBottom: 40,
   },
   tabs: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 60,
     gap: 4,
   },
   tab: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingVertical: 10,
+    backgroundColor: '#00ced1',
+    paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',
   },
   activeTab: {
-    backgroundColor: '#014141',
+    backgroundColor: '#008080',
+    borderWidth: 1,
+    borderColor: '#c6efef'
   },
   tabText: {
-    color: '#014141',
+    color: '#000',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 12,
   },
   cardGrid: {
     flexDirection: 'row',
@@ -128,22 +131,28 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   card: {
-    width: cardSize,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
+    backgroundColor: '#00ced1',
+    borderRadius: 12, 
+    width: '47%',
+    height: 100,
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    borderColor: '#000',
+    borderWidth: 1,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 4,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   cardText: {
     marginTop: 12,
     textAlign: 'center',
     fontWeight: 'bold',
-    color: '#014141',
+    color: '#000',
   },
 });
