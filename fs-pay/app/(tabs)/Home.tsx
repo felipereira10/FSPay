@@ -298,7 +298,7 @@ export default function Home() {
                     </TouchableOpacity>
                   );
                 case 'account':
-                  return <AccountInfo />;
+                  return <AccountInfo onClose={closeSubModal} />;
                 case 'security':
                   return <SecurityCenter />;
                 case 'service':

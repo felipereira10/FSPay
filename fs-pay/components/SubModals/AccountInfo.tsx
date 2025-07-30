@@ -14,7 +14,7 @@ import MaskInput, { Masks } from 'react-native-mask-input';
 import Modal from 'react-native-modal';
 import { router } from 'expo-router';
 
-export default function AccountInfo() {
+export default function AccountInfo({ onClose }: { onClose: () => void }) {
   const [formData, setFormData] = useState({
     fullName: '',
     cpf: '',
@@ -98,11 +98,14 @@ export default function AccountInfo() {
         birthdate: isoDate,
       };
 
-      await updateUserSelf(userId, payload);
+      const response = await updateUserSelf(userId, payload);
+      console.log('RESPOSTA DO UPDATE', response);
+      const storedToken = await AsyncStorage.getItem('userToken');
+      console.log('TOKEN AINDA PRESENTE?', storedToken);
       setShowSuccess(true);
       setTimeout(() => {
         setShowSuccess(false);
-        router.back();
+        onClose();
       }, 2000);
     } catch (err) {
       console.error(err);
