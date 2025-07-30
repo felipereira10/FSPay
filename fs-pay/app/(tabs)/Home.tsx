@@ -28,7 +28,21 @@ export default function Home() {
   const [subModalVisible, setSubModalVisible] = useState(false);
   const [subModalType, setSubModalType] = useState< 'admin' | 'adminMenu' | 'adminUsers' | 'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' | null>(null);
   const router = useRouter();
-  const balance = 20530.75;
+  const [balance, setBalance] = useState(0)
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const token = await AsyncStorage.getItem("userToken");
+      const res = await fetch("http://SEU_BACKEND/balance", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setBalance(data.balance);
+    };
+
+    fetchBalance();
+  }, []);
+
   const [confirmLogoutVisible, setConfirmLogoutVisible] = useState(false);
   const [authData, setAuthData] = useState<any>(null);
 
@@ -41,7 +55,6 @@ export default function Home() {
     };
     loadAuthData();
   }, []);
-
 
   const toggleBalance = () => setShowBalance(!showBalance);
 
