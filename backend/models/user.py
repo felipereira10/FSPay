@@ -2,6 +2,7 @@ from datetime import datetime
 from sqlalchemy import TIMESTAMP, Column, DateTime, Float, Integer, String, Date, Enum
 from core.database import Base
 from sqlalchemy import Column, Boolean
+from sqlalchemy.orm import relationship
 import enum
 
 class RoleEnum(enum.Enum):
@@ -29,4 +30,4 @@ class User(Base):
         onupdate=datetime.utcnow
     )
     is_approved = Column(Boolean, default=False, nullable=False)
-    balance = Column(Float, default=0.0)
+    transactions = relationship("PixTransaction", back_populates="user", cascade="all, delete-orphan")

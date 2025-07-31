@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes.users import router as users_router
 from routes.profile import router as profile_router
 from routes.email_change import router as email_change_router
+from routes.pix import router as pix_router
 from dotenv import load_dotenv
 
 import os
@@ -29,3 +30,6 @@ app.include_router(auth_router, prefix="/auth")
 app.include_router(users_router, prefix="/users", tags=["users"])
 app.include_router(profile_router, prefix="/profile", tags=["profile"])
 app.include_router(email_change_router, prefix="/email_change", tags=["email_change"])
+
+# Pays
+app.include_router(pix_router, prefix="/pix", tags=["Pix"])
