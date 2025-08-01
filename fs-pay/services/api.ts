@@ -47,7 +47,7 @@ const mockLogin = async (email: string, password: string) => {
 };
 
 // Cria uma instância do axios com base na URL
-const api = axios.create({
+export const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
@@ -121,7 +121,6 @@ export const signupUser = async (
     throw new Error('Erro inesperado no cadastro');
   }
 };
-
 
 // Get user by ID
 export const getAllUsers = async () => {
@@ -197,3 +196,14 @@ export const approveUser = async (userId: any) => {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
+
+
+export async function createPixTransaction(userId: number, payload: any) {
+  const token = await AsyncStorage.getItem('userToken');
+  const res = await api.post(`/pix/${userId}`, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+}

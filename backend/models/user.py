@@ -3,6 +3,7 @@ from sqlalchemy import TIMESTAMP, Column, DateTime, Float, Integer, String, Date
 from core.database import Base
 from sqlalchemy import Column, Boolean
 from sqlalchemy.orm import relationship
+from models.pix_transaction import PixTransaction
 import enum
 
 class RoleEnum(enum.Enum):
@@ -30,4 +31,5 @@ class User(Base):
         onupdate=datetime.utcnow
     )
     is_approved = Column(Boolean, default=False, nullable=False)
-    transactions = relationship("PixTransaction", back_populates="user", cascade="all, delete-orphan")
+    transactions = relationship(PixTransaction, back_populates="user", cascade="all, delete-orphan")
+

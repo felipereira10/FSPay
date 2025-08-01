@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions,
 } from 'react-native';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 const screenWidth = Dimensions.get('window').width;
 const cardSize = (screenWidth - 60) / 2; // 2 cards por linha com margem lateral
@@ -26,12 +27,31 @@ export default function Transfer() {
       case 'pix':
         return (
           <View style={styles.cardGrid}>
-            {renderCard(<MaterialIcons name="content-copy" size={28} color="#000" />, 'Pix Copia e Cola')}
-            {renderCard(<Ionicons name="qr-code-outline" size={28} color="#000" />, 'Ler QR Code')}
-            {renderCard(<MaterialIcons name="vpn-key" size={28} color="#000" />, 'Chave Pix')}
-            {renderCard(<MaterialIcons name="schedule" size={28} color="#000" />, 'Agendar Pix')}
-            {renderCard(<MaterialCommunityIcons name="qrcode-plus" size={28} color="#000" />, 'Cobrar com Pix')}
-            {renderCard(<MaterialIcons name="download" size={28} color="#000" />, 'Depositar com Pix')}
+            {renderCard(
+              <MaterialIcons name="content-copy" size={28} color="#000" />, 
+              'Pix Copia e Cola',
+              () => router.push('/transfer/pix/PixCopyPaste')
+            )}
+            {renderCard(<Ionicons name="qr-code-outline" size={28} color="#000" />, 
+              'Ler QR Code',
+              () => router.push('/transfer/pix/PixQRCodeScanner')
+            )}
+            {renderCard(<MaterialIcons name="vpn-key" size={28} color="#000" />, 
+              'Chave Pix',
+              () => router.push('/transfer/pix/ChargePix')
+            )}
+            {renderCard(<MaterialIcons name="schedule" size={28} color="#000" />, 
+              'Agendar Pix',
+              () => router.push('/transfer/pix/SchedulePix') 
+            )}
+            {renderCard(<MaterialCommunityIcons name="qrcode-plus" size={28} color="#000" />, 
+              'Cobrar com Pix',
+              () => router.push('/transfer/pix/SendPix')
+            )}
+            {renderCard(<MaterialIcons name="download" size={28} color="#000" />,
+              'Depositar com Pix',
+              () => router.push('/transfer/pix/DepositPix')
+            )}
           </View>
         );
       case 'conv':
