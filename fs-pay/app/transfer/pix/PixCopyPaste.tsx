@@ -50,9 +50,37 @@ export default function PixCopyPaste() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, justifyContent: 'center' },
-  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 20 },
-  input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, marginBottom: 20 },
-  button: { backgroundColor: '#007bff', padding: 14, borderRadius: 8 },
-  buttonText: { color: '#fff', fontWeight: 'bold', textAlign: 'center' },
+  container: { 
+    flex: 1, 
+    padding: 20, 
+    justifyContent: 'center', 
+    backgroundColor: '#118096' 
+    },
+  title: { 
+    fontSize: 22, 
+    fontWeight: 'bold', 
+    marginBottom: 22, 
+    color: '#fff' 
+  },
+  input: 
+  { borderWidth: 1, 
+    borderColor: '#ccc', 
+    borderRadius: 8, 
+    padding: 12, 
+    marginBottom: 20, 
+    backgroundColor: '#f0f0f0', 
+    fontSize: 16 
+  },
+  button: 
+  { backgroundColor: '#00ced1', 
+    padding: 14, 
+    borderRadius: 8, 
+    borderWidth: 1, 
+    borderColor: '#000' 
+  },
+  buttonText: { 
+    color: '#000', 
+    fontWeight: 'bold', 
+    textAlign: 'center' 
+  },
 });

@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   input: {
-    backgroundColor: 'white',
+    backgroundColor: '#f0f0f0',
     padding: 12,
     borderRadius: 8,
     marginBottom: 16,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: '#118096',
+    color: '#000',
     fontWeight: 'bold',
     fontSize: 16,
   },
