@@ -1,45 +1,59 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 
 export default function Invest() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tela de Investimentos</Text>
-      <Text style={styles.description}>Aqui você pode visualizar seus investimentos e aplicar em novas opções.</Text>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Ver Investimentos</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Investimentos</Text>
+
+      <TouchableOpacity style={styles.card}>
+        <Text style={styles.cardTitle}>Caixinhas de Investimento</Text>
+        <Text style={styles.cardDesc}>Crie objetivos e invista neles</Text>
       </TouchableOpacity>
-    </View>
+
+      <TouchableOpacity style={styles.card}>
+        <Text style={styles.cardTitle}>Bolsa de Valores</Text>
+        <Text style={styles.cardDesc}>Invista em ações e ETFs</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.card}>
+        <Text style={styles.cardTitle}>Fundos Imobiliários (FIIs)</Text>
+        <Text style={styles.cardDesc}>Invista em renda passiva</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.card}>
+        <Text style={styles.cardTitle}>Renda Fixa</Text>
+        <Text style={styles.cardDesc}>CDBs, LCIs, LCAs</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
+    backgroundColor: '#f5f5f5',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#014141',
+    marginBottom: 20,
   },
-  description: {
-    marginVertical: 20,
-    textAlign: 'center',
-    fontSize: 16,
-    color: '#555',
-  },
-  button: {
+  card: {
     backgroundColor: '#014141',
-    paddingVertical: 10,
-    paddingHorizontal: 40,
-    borderRadius: 8,
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 15,
   },
-  buttonText: {
+  cardTitle: {
+    fontSize: 18,
     color: '#fff',
-    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  cardDesc: {
+    color: '#cfcfcf',
+    fontSize: 14,
+    marginTop: 5,
   },
 });
