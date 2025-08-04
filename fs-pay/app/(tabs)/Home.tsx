@@ -17,6 +17,7 @@ import HelpCenter from '@/components/SubModals/HelpCenter';
 import MyServices from '@/components/SubModals/MyServices';
 import AboutApp from '@/components/SubModals/AboutApp';
 import BusinessAccount from '@/components/SubModals/BusinessAccount';
+import { getFullStatement } from '@/services/api';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -29,6 +30,25 @@ export default function Home() {
   const [subModalType, setSubModalType] = useState< 'admin' | 'adminMenu' | 'adminUsers' | 'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' | null>(null);
   const router = useRouter();
   const [balance, setBalance] = useState(0)
+  const [transactions, setTransactions] = useState([]);
+
+    useEffect(() => {
+    const fetchData = async () => {
+      const userData = await AsyncStorage.getItem("userData");
+      const parsed = JSON.parse(userData || "{}");
+      const accountId = parsed.account_id; // ou como você tiver salvo
+
+      try {
+        const data = await getFullStatement(accountId);
+        setBalance(data.balance);
+        setTransactions(data.history);
+      } catch (err) {
+        console.error("Erro ao buscar extrato", err);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchBalance = async () => {

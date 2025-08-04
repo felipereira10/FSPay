@@ -207,3 +207,14 @@ export async function createPixTransaction(userId: number, payload: any) {
   });
   return res.data;
 }
+
+// Saldo
+export const getFullStatement = async (accountId: number) => {
+  const token = await AsyncStorage.getItem("userToken");
+  const response = await api.get(`/account/statement-full/${accountId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  return response.data;
+};
