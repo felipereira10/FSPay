@@ -8,6 +8,8 @@ from pydantic import BaseModel
 
 import os
 
+router = APIRouter(prefix="/Auth", tags=["Autenticação"])
+
 class LoginData(BaseModel):
     email: str
     password: str
