@@ -70,21 +70,28 @@ export default function Home() {
   useEffect(() => {
     const fetchBalance = async () => {
       const token = await AsyncStorage.getItem("userToken");
-
-      if (!token) return; // evita o erro 404 se não tiver token
+      if (!token) return;
 
       try {
         const res = await api.get('/account/me', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setBalance(res.data.balance);
+
+        if (res.data && res.data.balance !== undefined) {
+          setBalance(res.data.balance);
+        } else {
+          console.log("Usuário ainda não tem conta");
+          setBalance(0); // ou exibe algo tipo "Conta ainda não criada"
+        }
       } catch (err) {
         console.error("Erro ao buscar saldo:", err);
+        setBalance(0); // fallback seguro
       }
     };
 
     fetchBalance();
   }, []);
+
 
 
   const [confirmLogoutVisible, setConfirmLogoutVisible] = useState(false);
