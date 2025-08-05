@@ -1,6 +1,8 @@
 from pydantic import BaseModel, EmailStr, ConfigDict
 from typing import Literal, Optional
 from datetime import date, datetime
+from models.account import Account
+from schemas.account import AccountResponse
 
 class UserCreate(BaseModel):
     fullName: str
@@ -22,6 +24,7 @@ class UserOut(BaseModel):
     is_approved: Optional[bool] = None
     createdAt: datetime
     updatedAt: Optional[datetime] = None
+    account: Optional[AccountResponse]
 
     model_config = ConfigDict(from_attributes=True, extra="ignore")
 

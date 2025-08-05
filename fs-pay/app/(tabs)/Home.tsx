@@ -17,7 +17,7 @@ import HelpCenter from '@/components/SubModals/HelpCenter';
 import MyServices from '@/components/SubModals/MyServices';
 import AboutApp from '@/components/SubModals/AboutApp';
 import BusinessAccount from '@/components/SubModals/BusinessAccount';
-import { getFullStatement } from '@/services/api';
+import { api, getBalance, getFullStatement, getUserByIdSelf } from '@/services/api';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -29,39 +29,63 @@ export default function Home() {
   const [subModalVisible, setSubModalVisible] = useState(false);
   const [subModalType, setSubModalType] = useState< 'admin' | 'adminMenu' | 'adminUsers' | 'photo' | 'account' | 'security' | 'service' | 'privacy' | 'help' | 'accountpj' | 'about' | null>(null);
   const router = useRouter();
-  const [balance, setBalance] = useState(0)
+  const [balance, setBalance] = useState<number>(0);
   const [transactions, setTransactions] = useState([]);
 
-    useEffect(() => {
-    const fetchData = async () => {
-      const userData = await AsyncStorage.getItem("userData");
-      const parsed = JSON.parse(userData || "{}");
-      const accountId = parsed.account_id; // ou como você tiver salvo
-
+  useEffect(() => {
+    const fetchUser = async () => {
       try {
-        const data = await getFullStatement(accountId);
-        setBalance(data.balance);
-        setTransactions(data.history);
-      } catch (err) {
-        console.error("Erro ao buscar extrato", err);
+        const userData = await getUserByIdSelf();
+        console.log(userData);
+        setBalance(Number(userData.account.balance || 0)); // <-- aqui
+      } catch (error) {
+        console.error('Erro ao carregar dados do usuário:', error);
       }
     };
 
-    fetchData();
+    fetchUser();
   }, []);
+
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const userData = await AsyncStorage.getItem("userData");
+            if (!userData) return;
+
+            const { id } = JSON.parse(userData);
+
+            const balanceData = await getBalance(id);
+            const statementData = await getFullStatement(id);
+
+            setBalance(balanceData.balance); // <-- depende de como o backend responde
+            setStatement(statementData.slice(0, 5)); // últimos 5 lançamentos
+          } catch (error) {
+            console.error("Erro ao buscar dados da conta:", error);
+          }
+        };
+
+        fetchData();
+      }, []);
 
   useEffect(() => {
     const fetchBalance = async () => {
       const token = await AsyncStorage.getItem("userToken");
-      const res = await fetch("http://SEU_BACKEND/balance", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      setBalance(data.balance);
+
+      if (!token) return; // evita o erro 404 se não tiver token
+
+      try {
+        const res = await api.get('/account/me', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setBalance(res.data.balance);
+      } catch (err) {
+        console.error("Erro ao buscar saldo:", err);
+      }
     };
 
     fetchBalance();
   }, []);
+
 
   const [confirmLogoutVisible, setConfirmLogoutVisible] = useState(false);
   const [authData, setAuthData] = useState<any>(null);
@@ -99,7 +123,7 @@ export default function Home() {
 
       const token = await AsyncStorage.getItem("userToken");
 
-      await fetch("http://SEU_IP:8000/users/upload-profile-pic", {
+      await fetch("http://192.168.0.53:8000/users/upload-profile-pic", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -154,9 +178,11 @@ export default function Home() {
         <Text style={styles.balanceLabel}>Saldo disponível</Text>
         <View style={styles.balanceRow}>
           <Text style={styles.balanceValue}>
-            {showBalance ? balance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '••••••••'}
+            {showBalance
+              ? balance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+              : '••••••••'}
           </Text>
-          <TouchableOpacity onPress={toggleBalance} style={{ marginLeft: 10 }}>
+          <TouchableOpacity onPress={() => setShowBalance(!showBalance)} style={{ marginLeft: 10 }}>
             <Ionicons name={showBalance ? 'eye-off' : 'eye'} size={22} color="#fff" />
           </TouchableOpacity>
         </View>
@@ -639,3 +665,7 @@ const styles = StyleSheet.create({
 
 
 });
+
+function setStatement(arg0: any) {
+  throw new Error('Function not implemented.');
+}

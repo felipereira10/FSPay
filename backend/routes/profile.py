@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from schemas.account import AccountResponse
+from models.account import Account
 from models.email_change import EmailChangeRequest
 from schemas.user import UserUpdateSchema, ChangePasswordSchema, EmailChangeRequestSchema
 from models.user import User
 from utils.dependencies import get_db, get_current_user
 from utils.security import verify_password, hash_password, send_email_verification, save_token, token_expired
+from schemas.user import UserOut
 import secrets
 
 router = APIRouter()
@@ -27,9 +30,20 @@ def update_user(
     db.commit()
     return {"status": "updated"}
 
-@router.get("/me")
-async def get_profile(current_user: User = Depends(get_current_user)):
-    return current_user
+@router.get("/me", response_model=UserOut)
+def get_my_profile(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == current_user.id).first()
+    account = db.query(Account).filter(Account.user_id == user.id).first()
+    user.account = account  # ADICIONA O SALDO
+
+    return user
+
+@router.get("/account/me", response_model=AccountResponse)
+def get_my_account(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    account = db.query(Account).filter(Account.user_id == current_user.id).first()
+    if not account:
+        raise HTTPException(status_code=404, detail="Conta não encontrada")
+    return account
 
 @router.post("/users/change-password")
 def change_password(payload: ChangePasswordSchema, db: Session = Depends(get_db), user=Depends(get_current_user)):

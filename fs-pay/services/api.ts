@@ -218,3 +218,13 @@ export const getFullStatement = async (accountId: number) => {
   });
   return response.data;
 };
+
+export const getBalance = async (accountId: number) => {
+  const token = await AsyncStorage.getItem("userToken");
+  const response = await api.get(`/account/balance/${accountId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  return response.data;
+};

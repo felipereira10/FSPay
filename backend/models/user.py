@@ -31,5 +31,6 @@ class User(Base):
         onupdate=datetime.utcnow
     )
     is_approved = Column(Boolean, default=False, nullable=False)
+    account = relationship("Account", back_populates="user", uselist=False)
     transactions = relationship(PixTransaction, back_populates="user", cascade="all, delete-orphan")
 

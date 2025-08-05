@@ -12,6 +12,8 @@ class Account(Base):
     account_type = Column(Enum("corrente", "poupanca"), default="corrente")
     created_at = Column(DateTime, default=datetime.utcnow)
 
+    user = relationship("User", back_populates="account")
+    
 class Transaction(Base):
     __tablename__ = "transactions"
 
