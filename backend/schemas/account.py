@@ -14,7 +14,7 @@ class AccountResponse(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class TransactionCreate(BaseModel):
     from_account_id: int
@@ -33,4 +33,4 @@ class TransactionResponse(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
