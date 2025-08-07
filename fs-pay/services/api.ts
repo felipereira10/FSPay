@@ -180,7 +180,6 @@ export const updateUserSelf = async (userId: number, data: any) => {
 //   return res.data;
 // };
 
-
 // Update user
 // Usado na tela de edição de usuário
 export const updateUser = async (userId: number, updatedData: any) => {
@@ -196,7 +195,6 @@ export const approveUser = async (userId: any) => {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
-
 
 export async function createPixTransaction(userId: number, payload: any) {
   const token = await AsyncStorage.getItem('userToken');

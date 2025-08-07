@@ -9,7 +9,7 @@ from routes.account import create_account
 
 import os
 
-router = APIRouter(prefix="/auth", tags=["Autenticação"])
+router = APIRouter(prefix="/auth", tags=["Autentication"])
 
 class LoginData(BaseModel):
     email: str

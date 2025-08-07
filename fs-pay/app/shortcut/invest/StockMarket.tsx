@@ -4,8 +4,8 @@ import { View, Text, StyleSheet } from 'react-native';
 export default function FixedIncome() {
   return (
     <View style={styles.container}>
-        <Text style={styles.title}>Bolsa de Valores</Text>
-        <Text style={styles.desc}>Invista em ações e ETFs.</Text>
+      <Text style={styles.title}>Bolsa de Valores</Text>
+      <Text style={styles.desc}>Invista em ações e ETFs.</Text>
     </View>
   );
 }

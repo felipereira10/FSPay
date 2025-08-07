@@ -17,7 +17,6 @@ const PixQRCodeScanner = () => {
       }
     }
   };
-
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Código do QR Code:</Text>
