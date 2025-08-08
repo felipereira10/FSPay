@@ -36,7 +36,7 @@ def make_transaction(tx: schemas_account.TransactionCreate, db: Session = Depend
     # Atualiza saldos
     from_account.balance -= tx.amount
     to_account.balance += tx.amount
-
+ 
     transaction = models_account.Transaction(**tx.dict())
     db.add(transaction)
     db.commit()
