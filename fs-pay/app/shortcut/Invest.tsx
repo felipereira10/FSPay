@@ -236,6 +236,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 8,
   },
+  
   botaoSalvar: {
     backgroundColor: '#014141',
     padding: 12,
