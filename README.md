@@ -18,7 +18,6 @@
 
 ---
 
-
 ## 🛠️ Tecnologias Utilizadas
 
 ### Frontend
@@ -29,8 +28,8 @@
 - Axios
 
 ### Backend
-- Node.js + NestJS
-- PostgreSQL + Prisma ORM
+- Python + FastAPI
+- MySQL
 - Docker
 - Redis (para cache/sessão)
 - JWT Authentication
@@ -49,6 +48,5 @@
 ```bash
 cd backend
 docker-compose up -d
-npm install
-npx prisma migrate dev
-npm run start:dev
+pip install requeriments.txt
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
