@@ -35,7 +35,7 @@
 - JWT Authentication
 
 ### Integrações
-- Brapi (dados da bolsa)
+- Brapi (dados da bolsa) -- ainda em teste
 - Firebase ou serviços de email/SMS
 - Open Finance (em desenvolvimento)
 
