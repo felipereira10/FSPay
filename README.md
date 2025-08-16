@@ -6,6 +6,7 @@
 
 **FSPay** é uma aplicação mobile de conta digital construída com React Native, que oferece funcionalidades como transferências, gestão de cartões e integração com dados de investimentos da bolsa brasileira (B3). O projeto visa unir segurança, modernidade e performance num ambiente intuitivo e funcional.
 
+
 ---
 
 ## 🚀 Funcionalidades
